@@ -5,19 +5,19 @@ const testimonials = [
   {
     name: "Ustadz Devin Halim Wijaya",
     avatar: "DH",
-    content: "Akhirnya ada app yang bantu saya memastikan investasi crypto tetap sesuai syariah. Fitur screener-nya sangat membantu!",
+    content: "Averroes menjawab kebutuhan umat akan panduan investasi digital yang sesuai syariah. Pendekatan fiqh muamalah yang digunakan sangat komprehensif dan mudah dipahami.",
     rating: 5,
   },
   {
     name: "Ustadz Fida Munadzir",
     avatar: "FM",
-    content: "Kalkulator zakat crypto-nya akurat dan mudah digunakan. Tidak perlu lagi hitung manual yang ribet.",
+    content: "Sebagai dai, saya sering ditanya tentang hukum crypto. Averroes membantu memberikan edukasi yang berbasis dalil dan pendapat ulama kontemporer dengan sangat baik.",
     rating: 5,
   },
   {
     name: "Ustadz Ade Setiawan",
     avatar: "AS",
-    content: "Edukasi fiqh muamalah-nya lengkap dan mudah dipahami. Sangat recommended untuk pemula di dunia crypto syariah!",
+    content: "Fitur screener syariah dan kalkulator zakat-nya sangat membantu umat dalam menunaikan kewajiban. Ini langkah positif untuk literasi keuangan syariah di era digital.",
     rating: 5,
   },
 ];
