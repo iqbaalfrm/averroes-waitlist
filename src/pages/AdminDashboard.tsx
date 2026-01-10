@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw } from "lucide-react";
-import { Link } from "react-router-dom";
-
-// Simple password protection - change this to your desired password
-const ADMIN_PASSWORD = "averroes2024";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Session } from "@supabase/supabase-js";
 
 interface WaitlistEntry {
   id: string;
@@ -21,27 +18,67 @@ interface WaitlistEntry {
 }
 
 const AdminDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [waitlistData, setWaitlistData] = useState<WaitlistEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem("admin_auth", "true");
-      toast({
-        title: "Login berhasil",
-        description: "Selamat datang di Admin Dashboard",
-      });
-    } else {
-      toast({
-        title: "Password salah",
-        description: "Silakan coba lagi",
-        variant: "destructive",
-      });
+  // Check authentication and admin status
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (!session) {
+        navigate("/admin/auth");
+      } else {
+        // Check admin status after auth change
+        setTimeout(() => {
+          checkAdminStatus(session.user.id);
+        }, 0);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (!session) {
+        navigate("/admin/auth");
+      } else {
+        checkAdminStatus(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error checking admin status:", error);
+      }
+
+      setIsAdmin(!!data);
+      
+      if (data) {
+        fetchWaitlistData();
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Error checking admin:", error);
+      setIsAdmin(false);
+      setIsLoading(false);
     }
   };
 
@@ -53,8 +90,15 @@ const AdminDashboard = () => {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setWaitlistData(data || []);
+      if (error) {
+        if (error.code === "PGRST301" || error.message.includes("permission")) {
+          setIsAdmin(false);
+        } else {
+          throw error;
+        }
+      } else {
+        setWaitlistData(data || []);
+      }
     } catch (error) {
       console.error("Error fetching waitlist:", error);
       toast({
@@ -67,23 +111,9 @@ const AdminDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    const authStatus = sessionStorage.getItem("admin_auth");
-    if (authStatus === "true") {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchWaitlistData();
-    }
-  }, [isAuthenticated]);
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    sessionStorage.removeItem("admin_auth");
-    setPassword("");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/admin/auth");
   };
 
   const exportToCSV = () => {
@@ -134,35 +164,40 @@ const AdminDashboard = () => {
     });
   });
 
-  if (!isAuthenticated) {
+  // Loading state
+  if (isLoading && isAdmin === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <RefreshCw className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Not admin state
+  if (isAdmin === false) {
     return (
       <div className="min-h-screen bg-background islamic-pattern flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-card">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-hero mx-auto mb-4 flex items-center justify-center">
-              <Lock className="w-8 h-8 text-primary-foreground" />
+        <Card className="w-full max-w-md shadow-card text-center">
+          <CardHeader>
+            <div className="w-16 h-16 rounded-2xl bg-destructive/10 mx-auto mb-4 flex items-center justify-center">
+              <ShieldAlert className="w-8 h-8 text-destructive" />
             </div>
-            <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
-            <p className="text-muted-foreground">Masukkan password untuk mengakses</p>
+            <CardTitle className="text-2xl">Akses Ditolak</CardTitle>
+            <p className="text-muted-foreground">
+              Akun kamu ({user?.email}) tidak memiliki akses admin. Hubungi administrator untuk mendapatkan akses.
+            </p>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-12 rounded-xl"
-              />
-              <Button type="submit" className="w-full" size="lg">
-                Masuk
+          <CardContent className="space-y-4">
+            <Button onClick={handleLogout} variant="outline" className="w-full">
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+            <Link to="/" className="block">
+              <Button variant="ghost" className="w-full">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Kembali ke halaman utama
               </Button>
-            </form>
-            <div className="mt-6 text-center">
-              <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                ← Kembali ke halaman utama
-              </Link>
-            </div>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -183,11 +218,15 @@ const AdminDashboard = () => {
             <h1 className="font-bold text-lg">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground hidden sm:inline">
+              {user?.email}
+            </span>
             <Button variant="outline" size="sm" onClick={fetchWaitlistData} disabled={isLoading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
           </div>
