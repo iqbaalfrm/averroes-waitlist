@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Check, Share2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const interests = [
   { id: "edukasi", label: "Edukasi" },
@@ -29,7 +30,9 @@ const WaitlistSection = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (!email || !email.includes("@")) {
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    if (!trimmedEmail || !trimmedEmail.includes("@")) {
       toast({
         title: "Email tidak valid",
         description: "Mohon masukkan alamat email yang benar.",
@@ -40,16 +43,46 @@ const WaitlistSection = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    setIsLoading(false);
-    setIsSubmitted(true);
-    
-    toast({
-      title: "Berhasil! 🎉",
-      description: "Kamu sudah masuk waitlist Averroes.",
-    });
+    try {
+      const { error } = await supabase
+        .from("waitlist")
+        .insert({
+          email: trimmedEmail,
+          name: name.trim() || null,
+          interests: selectedInterests.length > 0 ? selectedInterests : null,
+        });
+
+      if (error) {
+        // Check if it's a duplicate email error
+        if (error.code === "23505") {
+          toast({
+            title: "Email sudah terdaftar",
+            description: "Email ini sudah ada di waitlist kami.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      setIsSubmitted(true);
+      
+      toast({
+        title: "Berhasil! 🎉",
+        description: "Kamu sudah masuk waitlist Averroes.",
+      });
+    } catch (error) {
+      console.error("Waitlist error:", error);
+      toast({
+        title: "Terjadi kesalahan",
+        description: "Mohon coba lagi nanti.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const shareToWhatsApp = () => {
@@ -114,6 +147,7 @@ const WaitlistSection = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="h-12 rounded-xl"
+                    maxLength={100}
                   />
                 </div>
 
