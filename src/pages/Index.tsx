@@ -3,7 +3,6 @@ import HeroSection from "@/components/HeroSection";
 import WaitlistCounter from "@/components/WaitlistCounter";
 import TrustBadges from "@/components/TrustBadges";
 import FeaturesSection from "@/components/FeaturesSection";
-import DemoPreview from "@/components/DemoPreview";
 import HowItWorks from "@/components/HowItWorks";
 import TestimonialSection from "@/components/TestimonialSection";
 import WaitlistSection from "@/components/WaitlistSection";
@@ -15,12 +14,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
+      <main className="space-y-0">
         <HeroSection />
         <WaitlistCounter />
         <TrustBadges />
         <FeaturesSection />
-        <DemoPreview />
         <HowItWorks />
         <TestimonialSection />
         <WaitlistSection />
