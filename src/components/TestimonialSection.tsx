@@ -3,23 +3,20 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const testimonials = [
   {
-    name: "Ahmad Fauzi",
-    role: "Crypto Investor",
-    avatar: "AF",
+    name: "Ustadz Devin Halim Wijaya",
+    avatar: "DH",
     content: "Akhirnya ada app yang bantu saya memastikan investasi crypto tetap sesuai syariah. Fitur screener-nya sangat membantu!",
     rating: 5,
   },
   {
-    name: "Siti Nurhaliza",
-    role: "Financial Planner",
-    avatar: "SN",
+    name: "Ustadz Fida Munadzir",
+    avatar: "FM",
     content: "Kalkulator zakat crypto-nya akurat dan mudah digunakan. Tidak perlu lagi hitung manual yang ribet.",
     rating: 5,
   },
   {
-    name: "Muhammad Rizki",
-    role: "Early Adopter",
-    avatar: "MR",
+    name: "Ustadz Ade Setiawan",
+    avatar: "AS",
     content: "Edukasi fiqh muamalah-nya lengkap dan mudah dipahami. Sangat recommended untuk pemula di dunia crypto syariah!",
     rating: 5,
   },
@@ -80,10 +77,7 @@ const TestimonialSection = () => {
                     {testimonial.avatar}
                   </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-foreground">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                </div>
+                <p className="font-semibold text-foreground">{testimonial.name}</p>
               </div>
             </div>
           ))}
