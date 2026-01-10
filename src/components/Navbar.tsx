@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import averroesLogo from "@/assets/averroes-logo.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,9 +49,9 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft group-hover:shadow-hover transition-all duration-300">
-              <span className="text-primary-foreground font-bold text-lg">A</span>
+          <a href="#" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-soft group-hover:shadow-hover transition-all duration-300">
+              <img src={averroesLogo} alt="Averroes Logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-xl text-foreground">Averroes</span>
           </a>
