@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -20,6 +24,10 @@ const Navbar = () => {
       element.scrollIntoView({ behavior: "smooth" });
       setIsMobileMenuOpen(false);
     }
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
@@ -62,20 +70,48 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:block">
+          {/* Desktop CTA & Theme Toggle */}
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300 hover:shadow-soft"
+              aria-label="Toggle dark mode"
+            >
+              {mounted && (
+                theme === "dark" ? (
+                  <Sun size={20} className="text-gold" />
+                ) : (
+                  <Moon size={20} className="text-primary" />
+                )
+              )}
+            </button>
             <Button onClick={() => scrollToSection("waitlist")} size="lg">
               Gabung Waitlist
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Menu Button & Theme Toggle */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-secondary text-foreground transition-colors"
+              aria-label="Toggle dark mode"
+            >
+              {mounted && (
+                theme === "dark" ? (
+                  <Sun size={20} className="text-gold" />
+                ) : (
+                  <Moon size={20} className="text-primary" />
+                )
+              )}
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-foreground"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
