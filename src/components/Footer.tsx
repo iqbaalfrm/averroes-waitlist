@@ -9,11 +9,15 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Copyright */}
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <a href="#" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg overflow-hidden">
-                <img src={averroesLogo} alt="Averroes Logo" className="w-full h-full object-cover" />
+            <a href="#" className="flex items-center gap-2.5 group">
+              <div className="w-11 h-11 rounded-xl overflow-hidden shadow-soft group-hover:shadow-hover group-hover:scale-110 transition-all duration-300">
+                <img 
+                  src={averroesLogo} 
+                  alt="Averroes Logo" 
+                  className="w-full h-full object-cover group-hover:rotate-6 transition-transform duration-300" 
+                />
               </div>
-              <span className="font-bold text-lg text-foreground">Averroes</span>
+              <span className="font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-300">Averroes</span>
             </a>
             <span className="text-sm text-muted-foreground">
               © {currentYear} Averroes. All rights reserved.
