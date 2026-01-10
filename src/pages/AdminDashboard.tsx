@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
+import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
 
 interface WaitlistEntry {
   id: string;
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
   const [waitlistData, setWaitlistData] = useState<WaitlistEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
+  const [showReminderDialog, setShowReminderDialog] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -147,11 +149,23 @@ const AdminDashboard = () => {
     });
   };
 
-  const sendReminders = async () => {
+  // Calculate eligible users for reminder (7+ days old, less than 3 reminders)
+  const eligibleForReminder = waitlistData.filter((entry) => {
+    const daysSinceSignup = Math.floor((Date.now() - new Date(entry.created_at).getTime()) / (1000 * 60 * 60 * 24));
+    const reminderCount = entry.reminder_count || 0;
+    const lastReminder = entry.last_reminder_at ? new Date(entry.last_reminder_at) : null;
+    const daysSinceLastReminder = lastReminder 
+      ? Math.floor((Date.now() - lastReminder.getTime()) / (1000 * 60 * 60 * 24))
+      : Infinity;
+    
+    return daysSinceSignup >= 7 && reminderCount < 3 && daysSinceLastReminder >= 7;
+  }).length;
+
+  const sendReminders = async (template: EmailTemplate) => {
     setIsSendingReminder(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-waitlist-reminder", {
-        body: { daysOld: 7, maxReminders: 3 },
+        body: { daysOld: 7, maxReminders: 3, template },
       });
 
       if (error) throw error;
@@ -161,7 +175,7 @@ const AdminDashboard = () => {
         description: `Berhasil mengirim ${data.sent} email reminder`,
       });
       
-      // Refresh data to see updated reminder counts
+      setShowReminderDialog(false);
       fetchWaitlistData();
     } catch (error: any) {
       console.error("Error sending reminders:", error);
@@ -354,11 +368,11 @@ const AdminDashboard = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={sendReminders} 
-                disabled={waitlistData.length === 0 || isSendingReminder}
+                onClick={() => setShowReminderDialog(true)} 
+                disabled={eligibleForReminder === 0}
               >
-                <Bell className={`w-4 h-4 mr-2 ${isSendingReminder ? "animate-pulse" : ""}`} />
-                {isSendingReminder ? "Mengirim..." : "Kirim Reminder"}
+                <Bell className="w-4 h-4 mr-2" />
+                Kirim Reminder ({eligibleForReminder})
               </Button>
               <Button variant="outline" size="sm" onClick={exportToCSV} disabled={waitlistData.length === 0}>
                 <Download className="w-4 h-4 mr-2" />
@@ -433,6 +447,15 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Reminder Email Dialog */}
+      <ReminderEmailDialog
+        open={showReminderDialog}
+        onOpenChange={setShowReminderDialog}
+        onSend={sendReminders}
+        isSending={isSendingReminder}
+        eligibleCount={eligibleForReminder}
+      />
     </div>
   );
 };
