@@ -1,3 +1,5 @@
+import averroesLogo from "@/assets/averroes-logo.png";
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -8,8 +10,8 @@ const Footer = () => {
           {/* Logo & Copyright */}
           <div className="flex flex-col md:flex-row items-center gap-4">
             <a href="#" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-hero flex items-center justify-center">
-                <span className="text-primary-foreground font-bold">A</span>
+              <div className="w-9 h-9 rounded-lg overflow-hidden">
+                <img src={averroesLogo} alt="Averroes Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-bold text-lg text-foreground">Averroes</span>
             </a>
