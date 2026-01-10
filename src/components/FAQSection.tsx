@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Shield, Wallet, Search, Clock, HelpCircle } from "lucide-react";
+import { Shield, Wallet, Search, Clock, HelpCircle, Calculator, Sparkles, Globe, BookOpen } from "lucide-react";
 
 const faqs = [
   {
@@ -27,6 +27,34 @@ const faqs = [
     answer:
       "Screener Syariah menganalisis setiap crypto berdasarkan aspek teknologi, use case, dan mekanisme operasionalnya. Hasilnya berupa status kehalalan beserta penjelasan detail dan dalil fiqh muamalah yang mudah dipahami.",
     icon: Search,
+    category: "Fitur",
+  },
+  {
+    question: "Bagaimana cara menghitung zakat crypto?",
+    answer:
+      "Averroes menyediakan kalkulator zakat otomatis yang menghitung berdasarkan nilai portofolio crypto kamu. Kami mengikuti pendapat ulama bahwa crypto yang memenuhi nisab (setara 85 gram emas) dan haul (1 tahun kepemilikan) wajib dizakati 2.5%.",
+    icon: Calculator,
+    category: "Fitur",
+  },
+  {
+    question: "Apa bedanya Averroes dengan aplikasi crypto lainnya?",
+    answer:
+      "Averroes adalah satu-satunya platform yang menggabungkan analisis crypto dengan perspektif syariah Islam. Selain fitur standar seperti tracking portofolio, kami menyediakan screener kehalalan, kalkulator zakat, dan konten edukasi fiqh muamalah yang tidak ada di aplikasi lain.",
+    icon: Sparkles,
+    category: "Umum",
+  },
+  {
+    question: "Apakah tersedia dalam Bahasa Indonesia?",
+    answer:
+      "Tentu! Averroes dibangun khusus untuk komunitas Muslim Indonesia. Seluruh interface, konten edukasi, dan dalil-dalil fiqh disajikan dalam Bahasa Indonesia yang mudah dipahami. Ke depannya, kami juga akan mendukung bahasa lainnya.",
+    icon: Globe,
+    category: "Umum",
+  },
+  {
+    question: "Apakah ada konten edukasinya?",
+    answer:
+      "Ada! Averroes menyediakan perpustakaan edukasi lengkap tentang crypto syariah, mulai dari dasar-dasar blockchain, prinsip fiqh muamalah dalam aset digital, hingga panduan praktis investasi halal. Semua disusun oleh tim yang memahami crypto dan syariah.",
+    icon: BookOpen,
     category: "Fitur",
   },
   {
