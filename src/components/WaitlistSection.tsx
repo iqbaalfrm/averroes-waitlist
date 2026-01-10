@@ -67,11 +67,25 @@ const WaitlistSection = () => {
         return;
       }
 
+      // Send confirmation email (don't block on failure)
+      supabase.functions.invoke("send-waitlist-email", {
+        body: {
+          email: trimmedEmail,
+          name: name.trim() || undefined,
+        },
+      }).then(({ error: emailError }) => {
+        if (emailError) {
+          console.error("Failed to send confirmation email:", emailError);
+        } else {
+          console.log("Confirmation email sent successfully");
+        }
+      });
+
       setIsSubmitted(true);
       
       toast({
         title: "Berhasil! 🎉",
-        description: "Kamu sudah masuk waitlist Averroes.",
+        description: "Kamu sudah masuk waitlist Averroes. Cek email kamu!",
       });
     } catch (error) {
       console.error("Waitlist error:", error);
