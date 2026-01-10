@@ -1,4 +1,4 @@
-import averroesLogo from "@/assets/averroes-logo.png";
+import averroesIcon from "@/assets/averroes-icon.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,14 +9,15 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Copyright */}
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <a href="#" className="flex items-center group">
-              <div className="h-9 overflow-hidden group-hover:scale-105 transition-all duration-300">
+            <a href="#" className="flex items-center gap-2 group">
+              <div className="w-9 h-9 overflow-hidden group-hover:scale-110 transition-all duration-300">
                 <img 
-                  src={averroesLogo} 
+                  src={averroesIcon} 
                   alt="Averroes Logo" 
-                  className="h-full w-auto object-contain" 
+                  className="w-full h-full object-contain" 
                 />
               </div>
+              <span className="font-semibold text-base text-primary group-hover:text-primary/80 transition-colors duration-300">Averroes</span>
             </a>
             <span className="text-sm text-muted-foreground">
               © {currentYear} Averroes. All rights reserved.
