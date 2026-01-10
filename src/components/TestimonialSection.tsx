@@ -31,11 +31,14 @@ const TestimonialSection = () => {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-16 md:py-24 bg-gradient-to-b from-mint/20 to-background"
+      className="py-20 md:py-28 bg-gradient-to-b from-mint/20 to-background relative overflow-hidden"
     >
+      {/* Top gradient for smooth transition */}
+      <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
+      
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className={`text-center mb-12 scroll-reveal ${isVisible ? "revealed" : ""}`}>
+        <div className={`text-center mb-14 scroll-reveal ${isVisible ? "revealed" : ""}`}>
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             <Star className="w-4 h-4 fill-primary" />
             Testimonial
@@ -53,10 +56,10 @@ const TestimonialSection = () => {
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-card rounded-2xl p-6 shadow-card border border-border/50 hover:shadow-hover transition-all duration-300 group"
+              className="bg-card rounded-2xl p-6 shadow-card border border-border/50 hover:shadow-hover hover:-translate-y-2 transition-all duration-500 group"
             >
               {/* Quote Icon */}
-              <Quote className="w-8 h-8 text-primary/20 mb-4 group-hover:text-primary/40 transition-colors" />
+              <Quote className="w-8 h-8 text-primary/20 mb-4 group-hover:text-primary/40 transition-colors duration-300" />
 
               {/* Content */}
               <p className="text-foreground mb-6 leading-relaxed">
