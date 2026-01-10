@@ -9,30 +9,30 @@ import { Shield, Wallet, Search, Clock, HelpCircle } from "lucide-react";
 
 const faqs = [
   {
-    question: "Apakah Averroes bisa trading?",
+    question: "Apakah bisa trading langsung di Averroes?",
     answer:
-      "Tidak. Averroes fokus pada edukasi & pemantauan portofolio (read-only). Kami tidak menyediakan fitur jual-beli atau trading crypto.",
+      "Averroes bukan platform trading. Kami fokus membantu kamu memahami dunia crypto dari perspektif syariah — mulai dari edukasi, screening kehalalan, hingga pantau portofolio. Untuk jual-beli, kamu tetap pakai exchange favoritmu.",
     icon: Wallet,
     category: "Fitur",
   },
   {
-    question: "Apakah aman?",
+    question: "Bagaimana Averroes menjaga keamanan data saya?",
     answer:
-      "Sangat aman. Averroes bersifat non-custodial, artinya kami tidak pernah menyimpan atau memiliki akses ke private key kamu. Koneksi wallet hanya untuk melihat saldo (read-only).",
+      "Averroes bersifat non-custodial — kami tidak pernah menyimpan private key atau seed phrase kamu. Koneksi wallet hanya bersifat read-only untuk melihat saldo. Asetmu tetap 100% dalam kendalimu.",
     icon: Shield,
     category: "Keamanan",
   },
   {
-    question: "Apa itu Screener Syariah?",
+    question: "Bagaimana cara kerja Screener Syariah?",
     answer:
-      "Screener Syariah adalah fitur untuk mengecek status kehalalan sebuah crypto. Kami menyediakan ringkasan status syariah lengkap dengan alasan dan dalil fiqh muamalah.",
+      "Screener Syariah menganalisis setiap crypto berdasarkan aspek teknologi, use case, dan mekanisme operasionalnya. Hasilnya berupa status kehalalan beserta penjelasan detail dan dalil fiqh muamalah yang mudah dipahami.",
     icon: Search,
     category: "Fitur",
   },
   {
-    question: "Kapan rilis?",
+    question: "Kapan Averroes akan launching?",
     answer:
-      "Target beta segera! Daftar waitlist sekarang untuk mendapatkan akses lebih dulu dan notifikasi saat Averroes siap.",
+      "Kami sedang dalam tahap pengembangan intensif dan target beta sudah di depan mata! Gabung waitlist sekarang untuk jadi yang pertama mencoba dan dapatkan benefit eksklusif sebagai early adopter.",
     icon: Clock,
     category: "Umum",
   },
