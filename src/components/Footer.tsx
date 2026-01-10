@@ -9,8 +9,8 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Copyright */}
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <a href="#" className="flex items-center gap-1.5 group">
-              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-soft group-hover:shadow-hover group-hover:scale-110 transition-all duration-300">
+            <a href="#" className="flex items-center gap-0.5 group">
+              <div className="w-8 h-8 rounded-lg overflow-hidden shadow-soft group-hover:shadow-hover group-hover:scale-110 transition-all duration-300">
                 <img 
                   src={averroesLogo} 
                   alt="Averroes Logo" 
