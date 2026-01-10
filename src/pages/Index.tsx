@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import WaitlistCounter from "@/components/WaitlistCounter";
 import TrustBadges from "@/components/TrustBadges";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
@@ -16,7 +15,6 @@ const Index = () => {
       <Navbar />
       <main className="space-y-0">
         <HeroSection />
-        <WaitlistCounter />
         <TrustBadges />
         <FeaturesSection />
         <HowItWorks />
