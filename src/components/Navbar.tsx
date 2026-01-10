@@ -49,7 +49,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
+          <a href="#" className="flex items-center gap-3 group">
             <div className="w-10 h-10 overflow-hidden group-hover:scale-110 transition-all duration-300">
               <img 
                 src={averroesIcon} 
