@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut } from "lucide-react";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 
@@ -15,6 +15,8 @@ interface WaitlistEntry {
   name: string | null;
   interests: string[] | null;
   created_at: string;
+  last_reminder_at: string | null;
+  reminder_count: number | null;
 }
 
 const AdminDashboard = () => {
@@ -23,6 +25,7 @@ const AdminDashboard = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [waitlistData, setWaitlistData] = useState<WaitlistEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSendingReminder, setIsSendingReminder] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -142,6 +145,34 @@ const AdminDashboard = () => {
       title: "Export berhasil",
       description: "File CSV telah diunduh",
     });
+  };
+
+  const sendReminders = async () => {
+    setIsSendingReminder(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-waitlist-reminder", {
+        body: { daysOld: 7, maxReminders: 3 },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reminder terkirim",
+        description: `Berhasil mengirim ${data.sent} email reminder`,
+      });
+      
+      // Refresh data to see updated reminder counts
+      fetchWaitlistData();
+    } catch (error: any) {
+      console.error("Error sending reminders:", error);
+      toast({
+        title: "Gagal mengirim reminder",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingReminder(false);
+    }
   };
 
   // Calculate stats
@@ -317,12 +348,23 @@ const AdminDashboard = () => {
 
         {/* Waitlist Table */}
         <Card className="shadow-soft">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
             <CardTitle className="text-lg">Daftar Pendaftar</CardTitle>
-            <Button variant="outline" size="sm" onClick={exportToCSV} disabled={waitlistData.length === 0}>
-              <Download className="w-4 h-4 mr-2" />
-              Export CSV
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={sendReminders} 
+                disabled={waitlistData.length === 0 || isSendingReminder}
+              >
+                <Bell className={`w-4 h-4 mr-2 ${isSendingReminder ? "animate-pulse" : ""}`} />
+                {isSendingReminder ? "Mengirim..." : "Kirim Reminder"}
+              </Button>
+              <Button variant="outline" size="sm" onClick={exportToCSV} disabled={waitlistData.length === 0}>
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -344,6 +386,7 @@ const AdminDashboard = () => {
                       <TableHead>Nama</TableHead>
                       <TableHead>Minat</TableHead>
                       <TableHead>Tanggal Daftar</TableHead>
+                      <TableHead>Reminder</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -371,6 +414,15 @@ const AdminDashboard = () => {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
+                        </TableCell>
+                        <TableCell>
+                          {entry.reminder_count ? (
+                            <Badge variant="secondary" className="text-xs">
+                              {entry.reminder_count}x
+                            </Badge>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">-</span>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
