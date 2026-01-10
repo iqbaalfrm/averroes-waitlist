@@ -9,6 +9,7 @@ import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, Shie
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
+import { DashboardSkeleton, TableSkeleton } from "@/components/DashboardSkeleton";
 
 interface WaitlistEntry {
   id: string;
@@ -209,11 +210,27 @@ const AdminDashboard = () => {
     });
   });
 
-  // Loading state
-  if (isLoading && isAdmin === null) {
+  // Initial loading state with full skeleton
+  if (isAdmin === null) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <RefreshCw className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-background">
+        {/* Header Skeleton */}
+        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-4 w-20 bg-muted rounded animate-pulse" />
+              <div className="h-6 w-px bg-border" />
+              <div className="h-5 w-32 bg-muted rounded animate-pulse" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-9 w-24 bg-muted rounded animate-pulse" />
+              <div className="h-9 w-20 bg-muted rounded animate-pulse" />
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 py-8">
+          <DashboardSkeleton />
+        </main>
       </div>
     );
   }
@@ -382,9 +399,7 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <RefreshCw className="w-8 h-8 animate-spin text-primary" />
-              </div>
+              <TableSkeleton />
             ) : waitlistData.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <Mail className="w-12 h-12 mx-auto mb-4 opacity-50" />
