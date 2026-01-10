@@ -1,0 +1,217 @@
+import { useState, FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Check, Share2, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const interests = [
+  { id: "edukasi", label: "Edukasi" },
+  { id: "portofolio", label: "Portofolio" },
+  { id: "zakat", label: "Zakat" },
+  { id: "screener", label: "Screener" },
+];
+
+const WaitlistSection = () => {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleInterestToggle = (id: string) => {
+    setSelectedInterests((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !email.includes("@")) {
+      toast({
+        title: "Email tidak valid",
+        description: "Mohon masukkan alamat email yang benar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    setIsLoading(false);
+    setIsSubmitted(true);
+    
+    toast({
+      title: "Berhasil! 🎉",
+      description: "Kamu sudah masuk waitlist Averroes.",
+    });
+  };
+
+  const shareToWhatsApp = () => {
+    const text = encodeURIComponent(
+      "Aku baru daftar waitlist Averroes - aplikasi crypto syariah & keuangan Islami! Yuk daftar juga: https://averroes.app"
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  };
+
+  const shareToX = () => {
+    const text = encodeURIComponent(
+      "Baru daftar waitlist @AverroesApp - Crypto Syariah & Keuangan Islami! 🌙✨ https://averroes.app"
+    );
+    window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
+  };
+
+  return (
+    <section id="waitlist" className="py-16 md:py-24 bg-gradient-to-b from-background to-mint/20 islamic-pattern">
+      <div className="container mx-auto px-4">
+        <div className="max-w-xl mx-auto">
+          {!isSubmitted ? (
+            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-border/50 animate-scale-in">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-gold text-accent-foreground text-sm font-medium mb-4">
+                  <Send className="w-4 h-4" />
+                  Early Access
+                </span>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                  Dapatkan akses lebih dulu.
+                </h2>
+                <p className="text-muted-foreground">
+                  Kami kirim undangan beta saat Averroes siap.
+                </p>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                    Email <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="kamu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 rounded-xl"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                    Nama <span className="text-muted-foreground">(opsional)</span>
+                  </label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Nama kamu"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="h-12 rounded-xl"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-3">
+                    Saya tertarik: <span className="text-muted-foreground">(opsional)</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {interests.map((interest) => (
+                      <label
+                        key={interest.id}
+                        className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200 ${
+                          selectedInterests.includes(interest.id)
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/30"
+                        }`}
+                      >
+                        <Checkbox
+                          id={interest.id}
+                          checked={selectedInterests.includes(interest.id)}
+                          onCheckedChange={() => handleInterestToggle(interest.id)}
+                        />
+                        <span className="text-sm font-medium text-foreground">
+                          {interest.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  size="xl"
+                  variant="hero"
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      Mendaftarkan...
+                    </span>
+                  ) : (
+                    "Masuk Waitlist"
+                  )}
+                </Button>
+
+                <p className="text-xs text-center text-muted-foreground">
+                  Kami tidak spam. Kamu bisa unsubscribe kapan saja.
+                </p>
+              </form>
+            </div>
+          ) : (
+            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-primary/20 animate-scale-in text-center">
+              {/* Success state */}
+              <div className="w-20 h-20 rounded-full bg-gradient-hero mx-auto mb-6 flex items-center justify-center">
+                <Check className="w-10 h-10 text-primary-foreground" />
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                Berhasil! Kamu sudah masuk waitlist ✅
+              </h2>
+              <p className="text-muted-foreground mb-8">
+                Kami akan menghubungi kamu saat Averroes siap diluncurkan.
+              </p>
+
+              {/* Share buttons */}
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">
+                  Bagikan ke teman:
+                </p>
+                <div className="flex items-center justify-center gap-3">
+                  <Button
+                    onClick={shareToWhatsApp}
+                    variant="mint"
+                    className="gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    WhatsApp
+                  </Button>
+                  <Button
+                    onClick={shareToX}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                    X (Twitter)
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default WaitlistSection;
