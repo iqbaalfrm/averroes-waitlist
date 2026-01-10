@@ -11,7 +11,7 @@ const testimonials = [
   {
     name: "Ustadz Fida Munadzir",
     avatar: "FM",
-    content: "Sebagai dai, saya sering ditanya tentang hukum crypto. Averroes membantu memberikan edukasi yang berbasis dalil dan pendapat ulama kontemporer dengan sangat baik.",
+    content: "Saya sering ditanya tentang hukum crypto. Averroes membantu memberikan edukasi yang berbasis dalil dan pendapat ulama kontemporer dengan sangat baik.",
     rating: 5,
   },
   {
