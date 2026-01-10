@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, BookOpen, Eye } from "lucide-react";
+import { useParallax } from "@/hooks/useParallax";
 
 const HeroSection = () => {
+  const { offset: offset1 } = useParallax({ speed: 0.15 });
+  const { offset: offset2 } = useParallax({ speed: 0.25 });
+  const { offset: offset3 } = useParallax({ speed: 0.1 });
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -11,11 +16,20 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden islamic-pattern">
-      {/* Background decorations */}
+      {/* Background decorations with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-[10%] w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-[5%] w-96 h-96 bg-gold/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-mint/30 rounded-full blur-3xl" />
+        <div 
+          className="absolute top-20 right-[10%] w-72 h-72 bg-primary/10 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
+          style={{ transform: `translateY(${offset1}px)` }}
+        />
+        <div 
+          className="absolute bottom-20 left-[5%] w-96 h-96 bg-gold/10 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
+          style={{ transform: `translateY(${offset2}px)` }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-mint/30 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
+          style={{ transform: `translate(-50%, calc(-50% + ${offset3}px))` }}
+        />
       </div>
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">

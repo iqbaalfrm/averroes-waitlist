@@ -129,10 +129,26 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Safe area support for mobile */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Touch optimization */
+  .touch-manipulation {
+    touch-action: manipulation;
   }
 
   /* Smooth dark mode transition */

@@ -38,21 +38,21 @@ const StickyCTA = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden animate-fade-in">
-      <div className="bg-background/95 backdrop-blur-lg border-t border-border p-4 shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden animate-fade-in safe-area-bottom">
+      <div className="bg-background/95 backdrop-blur-lg border-t border-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg">
         <div className="flex items-center gap-3">
           <Button
             onClick={scrollToWaitlist}
             size="lg"
             variant="hero"
-            className="flex-1"
+            className="flex-1 active:scale-[0.98] transition-transform touch-manipulation"
           >
             Gabung Waitlist
             <ArrowRight className="ml-1 w-4 h-4" />
           </Button>
           <button
             onClick={() => setIsDismissed(true)}
-            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-3 -m-1 text-muted-foreground hover:text-foreground active:scale-95 transition-all touch-manipulation"
             aria-label="Tutup"
           >
             <X className="w-5 h-5" />
