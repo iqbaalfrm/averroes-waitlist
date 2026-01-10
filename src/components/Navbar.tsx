@@ -49,15 +49,15 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-soft group-hover:shadow-hover group-hover:scale-110 transition-all duration-300">
+          <a href="#" className="flex items-center gap-1.5 group">
+            <div className="w-11 h-11 rounded-xl overflow-hidden shadow-soft group-hover:shadow-hover group-hover:scale-110 transition-all duration-300">
               <img 
                 src={averroesLogo} 
                 alt="Averroes Logo" 
                 className="w-full h-full object-cover group-hover:rotate-6 transition-transform duration-300" 
               />
             </div>
-            <span className="font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-300">Averroes</span>
+            <span className="font-bold text-xl text-primary group-hover:text-primary/80 transition-colors duration-300">Averroes</span>
           </a>
 
           {/* Desktop Navigation */}
