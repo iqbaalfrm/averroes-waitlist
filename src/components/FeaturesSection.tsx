@@ -8,6 +8,7 @@ import {
   MessageCircle, 
   Brain 
 } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const features = [
   {
@@ -61,11 +62,17 @@ const features = [
 ];
 
 const FeaturesSection = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal({ threshold: 0.3 });
+  const { ref: gridRef, isVisible: gridVisible } = useScrollReveal({ threshold: 0.1 });
+
   return (
     <section id="fitur" className="py-16 md:py-24 islamic-pattern">
       <div className="container mx-auto px-4">
         {/* Section header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+        <div 
+          ref={headerRef as React.RefObject<HTMLDivElement>}
+          className={`text-center max-w-2xl mx-auto mb-12 md:mb-16 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+        >
           <span className="inline-block px-4 py-1.5 rounded-full bg-mint text-primary text-sm font-medium mb-4">
             Fitur Lengkap
           </span>
@@ -80,12 +87,14 @@ const FeaturesSection = () => {
         </div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {features.map((feature, index) => (
+        <div 
+          ref={gridRef as React.RefObject<HTMLDivElement>}
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 stagger-children ${gridVisible ? "revealed" : ""}`}
+        >
+          {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/20 shadow-soft hover:shadow-card transition-all duration-300 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              className="group relative p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/20 shadow-soft hover:shadow-card transition-all duration-300"
             >
               {/* Gradient background */}
               <div

@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Shield, Wallet, Search, Clock, HelpCircle, Calculator, Sparkles, Globe, BookOpen } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const faqs = [
   {
@@ -70,6 +71,8 @@ const categories = ["Semua", "Fitur", "Keamanan", "Umum"];
 
 const FAQSection = () => {
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal({ threshold: 0.3 });
+  const { ref: contentRef, isVisible: contentVisible } = useScrollReveal({ threshold: 0.1 });
 
   const filteredFaqs = activeCategory === "Semua" 
     ? faqs 
@@ -80,7 +83,10 @@ const FAQSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {/* Section header */}
-          <div className="text-center mb-8 md:mb-10">
+          <div 
+            ref={headerRef as React.RefObject<HTMLDivElement>}
+            className={`text-center mb-8 md:mb-10 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+          >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-mint text-primary text-sm font-medium mb-4">
               <HelpCircle className="w-4 h-4" />
               FAQ
@@ -94,63 +100,68 @@ const FAQSection = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-card text-muted-foreground hover:bg-secondary hover:text-foreground border border-border/50"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {/* FAQ Accordion */}
-          <Accordion type="single" collapsible className="space-y-3">
-            {filteredFaqs.map((faq, index) => {
-              const IconComponent = faq.icon;
-              return (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="bg-card rounded-2xl border border-border/50 px-6 shadow-soft hover:shadow-card transition-all duration-300 data-[state=open]:border-primary/30 data-[state=open]:shadow-card group"
+          <div 
+            ref={contentRef as React.RefObject<HTMLDivElement>}
+            className={`scroll-reveal ${contentVisible ? "revealed" : ""}`}
+          >
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    activeCategory === category
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "bg-card text-muted-foreground hover:bg-secondary hover:text-foreground border border-border/50"
+                  }`}
                 >
-                  <AccordionTrigger className="text-left text-foreground font-semibold py-5 hover:no-underline gap-4">
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-10 h-10 rounded-xl bg-mint/50 flex items-center justify-center shrink-0 group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground transition-colors duration-300">
-                        <IconComponent className="w-5 h-5 text-primary group-data-[state=open]:text-primary-foreground" />
-                      </div>
-                      <div className="flex flex-col items-start gap-1">
-                        <span className="text-xs text-muted-foreground font-normal">{faq.category}</span>
-                        <span className="group-hover:text-primary transition-colors">{faq.question}</span>
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5 pl-14 leading-relaxed">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
+                  {category}
+                </button>
+              ))}
+            </div>
 
-          {/* Contact CTA */}
-          <div className="mt-10 text-center p-6 bg-card rounded-2xl border border-border/50 shadow-soft">
-            <p className="text-muted-foreground mb-2">
-              Masih punya pertanyaan lain?
-            </p>
-            <a 
-              href="mailto:hello@averroes.app" 
-              className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-            >
-              Hubungi kami
-              <span className="text-lg">→</span>
-            </a>
+            {/* FAQ Accordion */}
+            <Accordion type="single" collapsible className="space-y-3">
+              {filteredFaqs.map((faq, index) => {
+                const IconComponent = faq.icon;
+                return (
+                  <AccordionItem
+                    key={index}
+                    value={`item-${index}`}
+                    className="bg-card rounded-2xl border border-border/50 px-6 shadow-soft hover:shadow-card transition-all duration-300 data-[state=open]:border-primary/30 data-[state=open]:shadow-card group"
+                  >
+                    <AccordionTrigger className="text-left text-foreground font-semibold py-5 hover:no-underline gap-4">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-10 h-10 rounded-xl bg-mint/50 flex items-center justify-center shrink-0 group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground transition-colors duration-300">
+                          <IconComponent className="w-5 h-5 text-primary group-data-[state=open]:text-primary-foreground" />
+                        </div>
+                        <div className="flex flex-col items-start gap-1">
+                          <span className="text-xs text-muted-foreground font-normal">{faq.category}</span>
+                          <span className="group-hover:text-primary transition-colors">{faq.question}</span>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-5 pl-14 leading-relaxed">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+
+            {/* Contact CTA */}
+            <div className="mt-10 text-center p-6 bg-card rounded-2xl border border-border/50 shadow-soft">
+              <p className="text-muted-foreground mb-2">
+                Masih punya pertanyaan lain?
+              </p>
+              <a 
+                href="mailto:hello@averroes.app" 
+                className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+              >
+                Hubungi kami
+                <span className="text-lg">→</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

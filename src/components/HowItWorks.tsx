@@ -1,4 +1,5 @@
 import { Wallet, LayoutDashboard, BookOpen } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const steps = [
   {
@@ -22,11 +23,17 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal({ threshold: 0.3 });
+  const { ref: stepsRef, isVisible: stepsVisible } = useScrollReveal({ threshold: 0.2 });
+
   return (
     <section id="cara-kerja" className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         {/* Section header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+        <div 
+          ref={headerRef as React.RefObject<HTMLDivElement>}
+          className={`text-center max-w-2xl mx-auto mb-12 md:mb-16 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+        >
           <span className="inline-block px-4 py-1.5 rounded-full bg-gold/20 text-accent-foreground text-sm font-medium mb-4">
             Cara Kerja
           </span>
@@ -41,12 +48,14 @@ const HowItWorks = () => {
         </div>
 
         {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div 
+          ref={stepsRef as React.RefObject<HTMLDivElement>}
+          className={`grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 stagger-children ${stepsVisible ? "revealed" : ""}`}
+        >
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className="relative group animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.15}s` }}
+              className="relative group"
             >
               {/* Connector line (desktop only) */}
               {index < steps.length - 1 && (

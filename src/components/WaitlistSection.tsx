@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Check, Share2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const interests = [
   { id: "edukasi", label: "Edukasi" },
@@ -20,6 +21,7 @@ const WaitlistSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.2 });
 
   const handleInterestToggle = (id: string) => {
     setSelectedInterests((prev) =>
@@ -114,11 +116,15 @@ const WaitlistSection = () => {
   };
 
   return (
-    <section id="waitlist" className="py-16 md:py-24 bg-gradient-to-b from-background to-mint/20 islamic-pattern">
+    <section 
+      id="waitlist" 
+      ref={ref as React.RefObject<HTMLElement>}
+      className="py-16 md:py-24 bg-gradient-to-b from-background to-mint/20 islamic-pattern"
+    >
       <div className="container mx-auto px-4">
-        <div className="max-w-xl mx-auto">
+        <div className={`max-w-xl mx-auto scroll-reveal-scale ${isVisible ? "revealed" : ""}`}>
           {!isSubmitted ? (
-            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-border/50 animate-scale-in">
+            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-border/50">
               {/* Header */}
               <div className="text-center mb-8">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-gold text-accent-foreground text-sm font-medium mb-4">
@@ -215,7 +221,7 @@ const WaitlistSection = () => {
               </form>
             </div>
           ) : (
-            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-primary/20 animate-scale-in text-center">
+            <div className="bg-card rounded-3xl p-6 md:p-10 shadow-card border border-primary/20 text-center">
               {/* Success state */}
               <div className="w-20 h-20 rounded-full bg-gradient-hero mx-auto mb-6 flex items-center justify-center">
                 <Check className="w-10 h-10 text-primary-foreground" />
