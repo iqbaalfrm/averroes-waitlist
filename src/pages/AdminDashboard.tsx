@@ -5,9 +5,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X } from "lucide-react";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
@@ -23,6 +33,8 @@ interface WaitlistEntry {
   reminder_count: number | null;
 }
 
+const ITEMS_PER_PAGE = 10;
+
 const AdminDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -36,6 +48,13 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [interestFilter, setInterestFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<string>("all");
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Delete states
+  const [deleteEntry, setDeleteEntry] = useState<WaitlistEntry | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -269,10 +288,55 @@ const AdminDashboard = () => {
 
   const hasActiveFilters = searchQuery || interestFilter !== "all" || dateFilter !== "all";
 
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, interestFilter, dateFilter]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredData, currentPage]);
+
+  // Delete entry handler
+  const handleDelete = async () => {
+    if (!deleteEntry) return;
+    
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("waitlist")
+        .delete()
+        .eq("id", deleteEntry.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Berhasil dihapus",
+        description: `${deleteEntry.email} telah dihapus dari waitlist`,
+      });
+      
+      setDeleteEntry(null);
+      fetchWaitlistData();
+    } catch (error: any) {
+      console.error("Error deleting entry:", error);
+      toast({
+        title: "Gagal menghapus",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const clearFilters = () => {
     setSearchQuery("");
     setInterestFilter("all");
     setDateFilter("all");
+    setCurrentPage(1);
   };
 
   // Initial loading state with full skeleton
@@ -531,62 +595,127 @@ const AdminDashboard = () => {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">#</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Nama</TableHead>
-                      <TableHead>Minat</TableHead>
-                      <TableHead>Tanggal Daftar</TableHead>
-                      <TableHead>Reminder</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredData.map((entry, index) => (
-                      <TableRow key={entry.id}>
-                        <TableCell className="font-medium text-muted-foreground">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell className="font-medium">{entry.email}</TableCell>
-                        <TableCell>{entry.name || <span className="text-muted-foreground">-</span>}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {entry.interests?.map((interest) => (
-                              <Badge key={interest} variant="outline" className="text-xs">
-                                {interest}
-                              </Badge>
-                            )) || <span className="text-muted-foreground">-</span>}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {new Date(entry.created_at).toLocaleString("id-ID", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          {entry.reminder_count ? (
-                            <Badge variant="secondary" className="text-xs">
-                              {entry.reminder_count}x
-                            </Badge>
-                          ) : (
-                            <span className="text-muted-foreground text-xs">-</span>
-                          )}
-                        </TableCell>
+              <>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[50px]">#</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Nama</TableHead>
+                        <TableHead>Minat</TableHead>
+                        <TableHead>Tanggal Daftar</TableHead>
+                        <TableHead>Reminder</TableHead>
+                        <TableHead className="w-[80px]">Aksi</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedData.map((entry, index) => (
+                        <TableRow key={entry.id}>
+                          <TableCell className="font-medium text-muted-foreground">
+                            {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                          </TableCell>
+                          <TableCell className="font-medium">{entry.email}</TableCell>
+                          <TableCell>{entry.name || <span className="text-muted-foreground">-</span>}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {entry.interests?.map((interest) => (
+                                <Badge key={interest} variant="outline" className="text-xs">
+                                  {interest}
+                                </Badge>
+                              )) || <span className="text-muted-foreground">-</span>}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {new Date(entry.created_at).toLocaleString("id-ID", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            {entry.reminder_count ? (
+                              <Badge variant="secondary" className="text-xs">
+                                {entry.reminder_count}x
+                              </Badge>
+                            ) : (
+                              <span className="text-muted-foreground text-xs">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDeleteEntry(entry)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      Halaman {currentPage} dari {totalPages}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className="w-4 h-4 mr-1" />
+                        Sebelumnya
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Selanjutnya
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteEntry} onOpenChange={(open) => !open && setDeleteEntry(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Pendaftar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah kamu yakin ingin menghapus <strong>{deleteEntry?.email}</strong> dari waitlist? 
+              Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Menghapus..." : "Hapus"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Reminder Email Dialog */}
       <ReminderEmailDialog
