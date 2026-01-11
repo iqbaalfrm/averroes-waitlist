@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mail, Send, Info, Users, User } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Mail, Send, Info, Users, User, FileText } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Recipient {
   id: string;
@@ -69,6 +71,43 @@ const NotificationEmailDialog = ({
   const [updatesText, setUpdatesText] = useState(defaultTemplate.updates.join("\n"));
   const [sendMode, setSendMode] = useState<"all" | "selected">(preSelectedRecipients.length > 0 ? "selected" : "all");
   const [selectedRecipients, setSelectedRecipients] = useState<Set<string>>(new Set(preSelectedRecipients));
+  const [savedTemplates, setSavedTemplates] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      fetchSavedTemplates();
+    }
+  }, [open]);
+
+  const fetchSavedTemplates = async () => {
+    const { data } = await supabase
+      .from("email_templates")
+      .select("id, name")
+      .order("name");
+    setSavedTemplates(data || []);
+  };
+
+  const loadTemplate = async (templateId: string) => {
+    const { data } = await supabase
+      .from("email_templates")
+      .select("*")
+      .eq("id", templateId)
+      .maybeSingle();
+    
+    if (data) {
+      setTemplate({
+        subject: data.subject,
+        greeting: data.greeting,
+        mainMessage: data.main_message,
+        updateTitle: data.update_title,
+        updates: data.updates,
+        closingMessage: data.closing_message,
+        ctaText: data.cta_text,
+        ctaUrl: data.cta_url,
+      });
+      setUpdatesText(data.updates.join("\n"));
+    }
+  };
 
   const handleUpdatesChange = (value: string) => {
     setUpdatesText(value);
@@ -124,6 +163,24 @@ const NotificationEmailDialog = ({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          {/* Load Template */}
+          {savedTemplates.length > 0 && (
+            <div className="space-y-2">
+              <Label>Muat Template Tersimpan</Label>
+              <Select onValueChange={loadTemplate}>
+                <SelectTrigger>
+                  <FileText className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Pilih template..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {savedTemplates.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           {/* Send Mode */}
           <div className="space-y-3">
             <Label>Kirim ke</Label>
