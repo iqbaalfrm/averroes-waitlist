@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell } from "lucide-react";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
@@ -29,6 +31,12 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
   const [showReminderDialog, setShowReminderDialog] = useState(false);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [interestFilter, setInterestFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
+  
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -209,6 +217,63 @@ const AdminDashboard = () => {
       interestCounts[interest] = (interestCounts[interest] || 0) + 1;
     });
   });
+
+  // Get unique interests for filter dropdown
+  const uniqueInterests = useMemo(() => {
+    const interests = new Set<string>();
+    waitlistData.forEach((entry) => {
+      entry.interests?.forEach((interest) => interests.add(interest));
+    });
+    return Array.from(interests).sort();
+  }, [waitlistData]);
+
+  // Filtered data
+  const filteredData = useMemo(() => {
+    return waitlistData.filter((entry) => {
+      // Search filter (email or name)
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = !searchQuery || 
+        entry.email.toLowerCase().includes(searchLower) ||
+        (entry.name?.toLowerCase().includes(searchLower) ?? false);
+
+      // Interest filter
+      const matchesInterest = interestFilter === "all" || 
+        (entry.interests?.includes(interestFilter) ?? false);
+
+      // Date filter
+      let matchesDate = true;
+      if (dateFilter !== "all") {
+        const entryDate = new Date(entry.created_at);
+        const now = new Date();
+        
+        switch (dateFilter) {
+          case "today":
+            matchesDate = entryDate.toDateString() === now.toDateString();
+            break;
+          case "week":
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            matchesDate = entryDate >= weekAgo;
+            break;
+          case "month":
+            const monthAgo = new Date();
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            matchesDate = entryDate >= monthAgo;
+            break;
+        }
+      }
+
+      return matchesSearch && matchesInterest && matchesDate;
+    });
+  }, [waitlistData, searchQuery, interestFilter, dateFilter]);
+
+  const hasActiveFilters = searchQuery || interestFilter !== "all" || dateFilter !== "all";
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setInterestFilter("all");
+    setDateFilter("all");
+  };
 
   // Initial loading state with full skeleton
   if (isAdmin === null) {
@@ -398,12 +463,72 @@ const AdminDashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
+            {/* Filter Controls */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Cari email atau nama..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Select value={interestFilter} onValueChange={setInterestFilter}>
+                <SelectTrigger className="w-full sm:w-[160px]">
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Minat" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua Minat</SelectItem>
+                  {uniqueInterests.map((interest) => (
+                    <SelectItem key={interest} value={interest}>
+                      {interest}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="w-full sm:w-[160px]">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Tanggal" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua Waktu</SelectItem>
+                  <SelectItem value="today">Hari Ini</SelectItem>
+                  <SelectItem value="week">7 Hari Terakhir</SelectItem>
+                  <SelectItem value="month">30 Hari Terakhir</SelectItem>
+                </SelectContent>
+              </Select>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1">
+                  <X className="w-4 h-4" />
+                  Reset
+                </Button>
+              )}
+            </div>
+
+            {/* Results count */}
+            {hasActiveFilters && (
+              <p className="text-sm text-muted-foreground mb-4">
+                Menampilkan {filteredData.length} dari {waitlistData.length} pendaftar
+              </p>
+            )}
+
             {isLoading ? (
               <TableSkeleton />
             ) : waitlistData.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <Mail className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Belum ada pendaftar</p>
+              </div>
+            ) : filteredData.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Tidak ada hasil yang cocok</p>
+                <Button variant="link" onClick={clearFilters} className="mt-2">
+                  Reset filter
+                </Button>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -419,7 +544,7 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {waitlistData.map((entry, index) => (
+                    {filteredData.map((entry, index) => (
                       <TableRow key={entry.id}>
                         <TableCell className="font-medium text-muted-foreground">
                           {index + 1}
