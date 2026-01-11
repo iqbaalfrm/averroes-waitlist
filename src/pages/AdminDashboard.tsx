@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
@@ -17,11 +18,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X, Trash2, ChevronLeft, ChevronRight, BarChart3 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
 import { DashboardSkeleton, TableSkeleton } from "@/components/DashboardSkeleton";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface WaitlistEntry {
   id: string;
@@ -55,6 +57,10 @@ const AdminDashboard = () => {
   // Delete states
   const [deleteEntry, setDeleteEntry] = useState<WaitlistEntry | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Bulk selection states
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -229,6 +235,22 @@ const AdminDashboard = () => {
     return new Date(entry.created_at) >= weekAgo;
   }).length;
 
+  // Daily signups chart data (last 14 days)
+  const chartData = useMemo(() => {
+    const days: { date: string; count: number; label: string }[] = [];
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split("T")[0];
+      const label = date.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+      const count = waitlistData.filter(
+        (entry) => new Date(entry.created_at).toISOString().split("T")[0] === dateStr
+      ).length;
+      days.push({ date: dateStr, count, label });
+    }
+    return days;
+  }, [waitlistData]);
+
   // Interest breakdown
   const interestCounts: Record<string, number> = {};
   waitlistData.forEach((entry) => {
@@ -330,6 +352,59 @@ const AdminDashboard = () => {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  // Bulk delete handler
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    setIsDeleting(true);
+    try {
+      const idsArray = Array.from(selectedIds);
+      const { error } = await supabase
+        .from("waitlist")
+        .delete()
+        .in("id", idsArray);
+
+      if (error) throw error;
+
+      toast({
+        title: "Berhasil dihapus",
+        description: `${idsArray.length} pendaftar telah dihapus dari waitlist`,
+      });
+      
+      setSelectedIds(new Set());
+      setShowBulkDeleteDialog(false);
+      fetchWaitlistData();
+    } catch (error: any) {
+      console.error("Error bulk deleting:", error);
+      toast({
+        title: "Gagal menghapus",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Selection handlers
+  const toggleSelectAll = () => {
+    if (selectedIds.size === paginatedData.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(paginatedData.map((e) => e.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
   };
 
   const clearFilters = () => {
@@ -486,6 +561,61 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
+        {/* Daily Signups Chart */}
+        <Card className="shadow-soft mb-8">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              Pendaftar per Hari (14 Hari Terakhir)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                  <XAxis 
+                    dataKey="label" 
+                    tick={{ fontSize: 12 }} 
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-muted-foreground"
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12 }} 
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                    className="text-muted-foreground"
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))", 
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px"
+                    }}
+                    labelStyle={{ color: "hsl(var(--foreground))" }}
+                    formatter={(value: number) => [value, "Pendaftar"]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    fill="url(#colorCount)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Interest Breakdown */}
         {Object.keys(interestCounts).length > 0 && (
           <Card className="shadow-soft mb-8">
@@ -572,12 +702,36 @@ const AdminDashboard = () => {
               )}
             </div>
 
-            {/* Results count */}
-            {hasActiveFilters && (
-              <p className="text-sm text-muted-foreground mb-4">
-                Menampilkan {filteredData.length} dari {waitlistData.length} pendaftar
-              </p>
-            )}
+            {/* Results count and bulk actions */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                {hasActiveFilters && (
+                  <p className="text-sm text-muted-foreground">
+                    Menampilkan {filteredData.length} dari {waitlistData.length} pendaftar
+                  </p>
+                )}
+                {selectedIds.size > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{selectedIds.size} dipilih</Badge>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowBulkDeleteDialog(true)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Hapus Terpilih
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedIds(new Set())}
+                    >
+                      Batal
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {isLoading ? (
               <TableSkeleton />
@@ -600,6 +754,12 @@ const AdminDashboard = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-[50px]">
+                          <Checkbox
+                            checked={paginatedData.length > 0 && selectedIds.size === paginatedData.length}
+                            onCheckedChange={toggleSelectAll}
+                          />
+                        </TableHead>
                         <TableHead className="w-[50px]">#</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Nama</TableHead>
@@ -611,7 +771,13 @@ const AdminDashboard = () => {
                     </TableHeader>
                     <TableBody>
                       {paginatedData.map((entry, index) => (
-                        <TableRow key={entry.id}>
+                        <TableRow key={entry.id} className={selectedIds.has(entry.id) ? "bg-muted/50" : ""}>
+                          <TableCell>
+                            <Checkbox
+                              checked={selectedIds.has(entry.id)}
+                              onCheckedChange={() => toggleSelect(entry.id)}
+                            />
+                          </TableCell>
                           <TableCell className="font-medium text-muted-foreground">
                             {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                           </TableCell>
@@ -712,6 +878,29 @@ const AdminDashboard = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isDeleting ? "Menghapus..." : "Hapus"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus {selectedIds.size} Pendaftar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah kamu yakin ingin menghapus <strong>{selectedIds.size} pendaftar</strong> yang dipilih dari waitlist? 
+              Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Menghapus..." : `Hapus ${selectedIds.size} Pendaftar`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
