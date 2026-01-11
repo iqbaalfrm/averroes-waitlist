@@ -12,7 +12,6 @@ const emailSchema = z.string().email("Email tidak valid");
 const passwordSchema = z.string().min(6, "Password minimal 6 karakter");
 
 const AdminAuth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -67,62 +66,35 @@ const AdminAuth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateInputs()) return;
 
     setIsLoading(true);
 
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-        if (error) {
-          if (error.message.includes("Invalid login credentials")) {
-            toast({
-              title: "Login gagal",
-              description: "Email atau password salah.",
-              variant: "destructive",
-            });
-          } else {
-            throw error;
-          }
-          return;
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            title: "Login gagal",
+            description: "Email atau password salah.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
         }
-
-        toast({
-          title: "Login berhasil",
-          description: "Selamat datang kembali!",
-        });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`,
-          },
-        });
-
-        if (error) {
-          if (error.message.includes("already registered")) {
-            toast({
-              title: "Email sudah terdaftar",
-              description: "Silakan login dengan email ini.",
-              variant: "destructive",
-            });
-          } else {
-            throw error;
-          }
-          return;
-        }
-
-        toast({
-          title: "Registrasi berhasil",
-          description: "Akun kamu sudah dibuat. Silakan hubungi admin untuk mendapatkan akses.",
-        });
+        return;
       }
+
+      toast({
+        title: "Login berhasil",
+        description: "Selamat datang kembali!",
+      });
+
     } catch (error) {
       console.error("Auth error:", error);
       toast({
@@ -143,12 +115,10 @@ const AdminAuth = () => {
             <Lock className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl">
-            {isLogin ? "Login Admin" : "Daftar Admin"}
+            Login Admin
           </CardTitle>
           <p className="text-muted-foreground">
-            {isLogin
-              ? "Masuk ke dashboard admin Averroes"
-              : "Buat akun admin baru"}
+            Masuk ke dashboard admin Averroes
           </p>
         </CardHeader>
         <CardContent>
@@ -200,24 +170,15 @@ const AdminAuth = () => {
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                  {isLogin ? "Masuk..." : "Mendaftar..."}
+                  Masuk...
                 </span>
               ) : (
-                isLogin ? "Masuk" : "Daftar"
+                "Masuk"
               )}
             </Button>
           </form>
 
           <div className="mt-6 text-center space-y-4">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-primary hover:underline"
-            >
-              {isLogin
-                ? "Belum punya akun? Daftar"
-                : "Sudah punya akun? Login"}
-            </button>
-
             <div>
               <Link
                 to="/"

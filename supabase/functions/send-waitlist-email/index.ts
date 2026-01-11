@@ -88,7 +88,6 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <!-- Footer -->
-          <div style="text-align: center; margin-top: 32px; color: #9ca3af; font-size: 12px;">
           <!-- Footer -->
           <div style="text-align: center; margin-top: 32px; color: #9ca3af; font-size: 12px;">
             <p style="margin: 0;">© 2026 Averroes. Crypto Syariah & Keuangan Islami.</p>
