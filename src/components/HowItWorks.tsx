@@ -27,24 +27,24 @@ const HowItWorks = () => {
   const { ref: stepsRef, isVisible: stepsVisible } = useScrollReveal({ threshold: 0.2 });
 
   return (
-    <section id="cara-kerja" className="py-12 md:py-16 bg-muted/30 relative overflow-hidden">
+    <section id="cara-kerja" className="py-8 sm:py-12 md:py-16 bg-muted/30 relative overflow-hidden">
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 sm:px-4">
         {/* Section header */}
         <div 
           ref={headerRef as React.RefObject<HTMLDivElement>}
-          className={`text-center max-w-2xl mx-auto mb-8 md:mb-12 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+          className={`text-center max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-12 scroll-reveal ${headerVisible ? "revealed" : ""}`}
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-gold/20 text-accent-foreground text-sm font-medium mb-4">
+          <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gold/20 text-accent-foreground text-xs sm:text-sm font-medium mb-3 sm:mb-4">
             Cara Kerja
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">
             Mulai dalam{" "}
             <span className="text-gradient">3 langkah mudah</span>
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-xs sm:text-base text-muted-foreground">
             Tidak perlu setup rumit. Cukup beberapa klik dan kamu siap 
             memulai perjalanan investasi syariah.
           </p>
@@ -53,7 +53,7 @@ const HowItWorks = () => {
         {/* Steps */}
         <div 
           ref={stepsRef as React.RefObject<HTMLDivElement>}
-          className={`grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 stagger-children ${stepsVisible ? "revealed" : ""}`}
+          className={`grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 md:gap-8 stagger-children ${stepsVisible ? "revealed" : ""}`}
         >
           {steps.map((step, index) => (
             <div
@@ -65,22 +65,22 @@ const HowItWorks = () => {
                 <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent" />
               )}
 
-              <div className="relative bg-card rounded-2xl p-6 md:p-8 shadow-soft hover:shadow-card hover:-translate-y-2 transition-all duration-500 border border-border/50 hover:border-primary/20">
+              <div className="relative bg-card rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-soft hover:shadow-card hover:-translate-y-2 transition-all duration-500 border border-border/50 hover:border-primary/20">
                 {/* Step number */}
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="text-5xl font-extrabold text-primary/10 group-hover:text-primary/20 transition-colors duration-300">
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-6">
+                  <span className="text-3xl sm:text-5xl font-extrabold text-primary/10 group-hover:text-primary/20 transition-colors duration-300">
                     {step.number}
                   </span>
-                  <div className="w-14 h-14 rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform duration-500">
-                    <step.icon className="w-7 h-7 text-primary-foreground" />
+                  <div className="w-10 sm:w-14 h-10 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-hero flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform duration-500">
+                    <step.icon className="w-5 sm:w-7 h-5 sm:h-7 text-primary-foreground" />
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-semibold text-foreground mb-3">
+                <h3 className="text-sm sm:text-xl font-semibold text-foreground mb-1.5 sm:mb-3">
                   {step.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-xs sm:text-base text-muted-foreground leading-relaxed">
                   {step.description}
                 </p>
               </div>
