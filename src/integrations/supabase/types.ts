@@ -35,6 +35,54 @@ export type Database = {
         }
         Relationships: []
       }
+      email_templates: {
+        Row: {
+          closing_message: string
+          created_at: string
+          created_by: string | null
+          cta_text: string
+          cta_url: string
+          greeting: string
+          id: string
+          main_message: string
+          name: string
+          subject: string
+          update_title: string
+          updated_at: string
+          updates: string[]
+        }
+        Insert: {
+          closing_message: string
+          created_at?: string
+          created_by?: string | null
+          cta_text: string
+          cta_url?: string
+          greeting: string
+          id?: string
+          main_message: string
+          name: string
+          subject: string
+          update_title: string
+          updated_at?: string
+          updates?: string[]
+        }
+        Update: {
+          closing_message?: string
+          created_at?: string
+          created_by?: string | null
+          cta_text?: string
+          cta_url?: string
+          greeting?: string
+          id?: string
+          main_message?: string
+          name?: string
+          subject?: string
+          update_title?: string
+          updated_at?: string
+          updates?: string[]
+        }
+        Relationships: []
+      }
       waitlist: {
         Row: {
           created_at: string

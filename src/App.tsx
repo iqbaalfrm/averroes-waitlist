@@ -6,8 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import AdminDashboard from "./pages/AdminDashboard";
 import AdminAuth from "./pages/AdminAuth";
+import AdminWrapper from "./pages/admin/AdminWrapper";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminWaitlist from "./pages/admin/AdminWaitlist";
+import AdminTemplates from "./pages/admin/AdminTemplates";
 
 const queryClient = new QueryClient();
 
@@ -20,9 +23,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/auth" element={<AdminAuth />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/admin" element={<AdminWrapper />}>
+              <Route index element={<AdminOverview />} />
+              <Route path="waitlist" element={<AdminWaitlist />} />
+              <Route path="templates" element={<AdminTemplates />} />
+              <Route path="send-email" element={<AdminWaitlist />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
