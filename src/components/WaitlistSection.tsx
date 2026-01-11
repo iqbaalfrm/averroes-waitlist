@@ -119,7 +119,7 @@ const WaitlistSection = () => {
     <section 
       id="waitlist" 
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-20 md:py-28 bg-gradient-to-b from-background to-mint/20 islamic-pattern relative overflow-hidden"
+      className="py-12 md:py-16 bg-gradient-to-b from-background to-mint/20 islamic-pattern relative overflow-hidden"
     >
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />

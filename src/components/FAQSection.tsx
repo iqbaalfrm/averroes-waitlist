@@ -79,7 +79,7 @@ const FAQSection = () => {
     : faqs.filter(faq => faq.category === activeCategory);
 
   return (
-    <section id="faq" className="py-20 md:py-28 bg-muted/30 relative overflow-hidden">
+    <section id="faq" className="py-12 md:py-16 bg-muted/30 relative overflow-hidden">
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
       

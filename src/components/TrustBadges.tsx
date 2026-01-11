@@ -30,7 +30,7 @@ const TrustBadges = () => {
   return (
     <section 
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-12 md:py-16 bg-muted/30 relative overflow-hidden"
+      className="py-8 md:py-10 bg-muted/30 relative overflow-hidden"
     >
       {/* Subtle gradient overlay for smooth section transition */}
       <div className="absolute inset-x-0 top-0 h-16 section-gradient-top pointer-events-none" />
