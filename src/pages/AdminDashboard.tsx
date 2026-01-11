@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X, Trash2, ChevronLeft, ChevronRight, BarChart3 } from "lucide-react";
+import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, ShieldAlert, LogOut, Bell, Search, Filter, X, Trash2, ChevronLeft, ChevronRight, BarChart3, Sun, Moon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
 import { DashboardSkeleton, TableSkeleton } from "@/components/DashboardSkeleton";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useTheme } from "next-themes";
 
 interface WaitlistEntry {
   id: string;
@@ -36,6 +37,38 @@ interface WaitlistEntry {
 }
 
 const ITEMS_PER_PAGE = 10;
+
+const ThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Sun className="h-4 w-4" />
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-9 w-9"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      {theme === "dark" ? (
+        <Sun className="h-4 w-4" />
+      ) : (
+        <Moon className="h-4 w-4" />
+      )}
+    </Button>
+  );
+};
 
 const AdminDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -487,6 +520,7 @@ const AdminDashboard = () => {
             <span className="text-sm text-muted-foreground hidden sm:inline">
               {user?.email}
             </span>
+            <ThemeToggle />
             <Button variant="outline" size="sm" onClick={fetchWaitlistData} disabled={isLoading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
