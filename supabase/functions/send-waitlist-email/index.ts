@@ -45,8 +45,8 @@ const handler = async (req: Request): Promise<Response> => {
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 32px;">
             <!-- Logo -->
-            <div style="text-align: center;">
-              <img src="https://averroes.web.id/logo.png" alt="Averroes Logo" width="60" height="60" style="border-radius: 12px; display: inline-block;">
+            <div style="display: inline-block; width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #34d399 100%); border-radius: 16px; line-height: 60px; font-size: 28px; font-weight: bold; color: white; text-align: center;">
+              A
             </div>
             <h1 style="margin: 16px 0 0; color: #1a1a1a; font-size: 24px;">Averroes</h1>
             <p style="margin: 4px 0 0; color: #6b7280; font-size: 14px;">Crypto Syariah & Keuangan Islami</p>
