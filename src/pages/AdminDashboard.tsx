@@ -22,6 +22,7 @@ import { Users, Mail, TrendingUp, Calendar, Download, ArrowLeft, RefreshCw, Shie
 import { Link, useNavigate } from "react-router-dom";
 import { User, Session } from "@supabase/supabase-js";
 import ReminderEmailDialog, { EmailTemplate } from "@/components/ReminderEmailDialog";
+import NotificationEmailDialog, { NotificationTemplate } from "@/components/NotificationEmailDialog";
 import { DashboardSkeleton, TableSkeleton } from "@/components/DashboardSkeleton";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useTheme } from "next-themes";
@@ -94,6 +95,11 @@ const AdminDashboard = () => {
   // Bulk selection states
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  
+  // Notification email states
+  const [showNotificationDialog, setShowNotificationDialog] = useState(false);
+  const [isSendingNotification, setIsSendingNotification] = useState(false);
+  const [notificationPreselected, setNotificationPreselected] = useState<string[]>([]);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -254,6 +260,41 @@ const AdminDashboard = () => {
     } finally {
       setIsSendingReminder(false);
     }
+  };
+
+  // Send notification emails
+  const sendNotifications = async (template: NotificationTemplate, recipientIds: string[]) => {
+    setIsSendingNotification(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-notification-email", {
+        body: { template, recipientIds },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Notifikasi terkirim",
+        description: `Berhasil mengirim ${data.sent} email notifikasi`,
+      });
+      
+      setShowNotificationDialog(false);
+      setNotificationPreselected([]);
+    } catch (error: any) {
+      console.error("Error sending notifications:", error);
+      toast({
+        title: "Gagal mengirim notifikasi",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingNotification(false);
+    }
+  };
+
+  // Open notification dialog with selected recipients
+  const openNotificationForSelected = () => {
+    setNotificationPreselected(Array.from(selectedIds));
+    setShowNotificationDialog(true);
   };
 
   // Calculate stats
@@ -674,7 +715,19 @@ const AdminDashboard = () => {
         <Card className="shadow-soft">
           <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2">
             <CardTitle className="text-lg">Daftar Pendaftar</CardTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  setNotificationPreselected([]);
+                  setShowNotificationDialog(true);
+                }}
+                disabled={waitlistData.length === 0}
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Kirim Notifikasi
+              </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -745,8 +798,16 @@ const AdminDashboard = () => {
                   </p>
                 )}
                 {selectedIds.size > 0 && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{selectedIds.size} dipilih</Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={openNotificationForSelected}
+                    >
+                      <Mail className="w-4 h-4 mr-1" />
+                      Kirim Email
+                    </Button>
                     <Button
                       variant="destructive"
                       size="sm"
@@ -947,6 +1008,16 @@ const AdminDashboard = () => {
         onSend={sendReminders}
         isSending={isSendingReminder}
         eligibleCount={eligibleForReminder}
+      />
+
+      {/* Notification Email Dialog */}
+      <NotificationEmailDialog
+        open={showNotificationDialog}
+        onOpenChange={setShowNotificationDialog}
+        onSend={sendNotifications}
+        isSending={isSendingNotification}
+        allRecipients={waitlistData.map(e => ({ id: e.id, email: e.email, name: e.name }))}
+        preSelectedRecipients={notificationPreselected}
       />
     </div>
   );

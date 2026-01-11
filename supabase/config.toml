@@ -1,1 +1,10 @@
 project_id = "qztoplynjapjbsilzuza"
+
+[functions.send-waitlist-email]
+verify_jwt = false
+
+[functions.send-waitlist-reminder]
+verify_jwt = false
+
+[functions.send-notification-email]
+verify_jwt = false
