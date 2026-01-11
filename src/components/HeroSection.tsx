@@ -15,7 +15,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden islamic-pattern">
+    <section className="relative min-h-[90vh] flex items-center justify-center pt-16 pb-8 overflow-hidden islamic-pattern">
       {/* Background decorations with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
@@ -32,7 +32,7 @@ const HeroSection = () => {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-8 md:py-12 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mint border border-primary/10 mb-6 animate-fade-in">
@@ -93,7 +93,7 @@ const HeroSection = () => {
         </div>
 
         {/* App Mockup */}
-        <div className="mt-16 md:mt-20 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+        <div className="mt-10 md:mt-14 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
           <div className="relative">
             {/* Phone frame */}
             <div className="bg-foreground/5 backdrop-blur-sm rounded-[2.5rem] p-3 shadow-card">

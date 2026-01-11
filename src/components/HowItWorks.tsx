@@ -27,7 +27,7 @@ const HowItWorks = () => {
   const { ref: stepsRef, isVisible: stepsVisible } = useScrollReveal({ threshold: 0.2 });
 
   return (
-    <section id="cara-kerja" className="py-20 md:py-28 bg-muted/30 relative overflow-hidden">
+    <section id="cara-kerja" className="py-12 md:py-16 bg-muted/30 relative overflow-hidden">
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
       
@@ -35,7 +35,7 @@ const HowItWorks = () => {
         {/* Section header */}
         <div 
           ref={headerRef as React.RefObject<HTMLDivElement>}
-          className={`text-center max-w-2xl mx-auto mb-14 md:mb-20 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+          className={`text-center max-w-2xl mx-auto mb-8 md:mb-12 scroll-reveal ${headerVisible ? "revealed" : ""}`}
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-gold/20 text-accent-foreground text-sm font-medium mb-4">
             Cara Kerja
