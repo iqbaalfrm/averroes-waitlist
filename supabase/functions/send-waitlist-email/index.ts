@@ -44,8 +44,9 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 32px;">
-            <div style="display: inline-block; width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #34d399 100%); border-radius: 16px; line-height: 60px; font-size: 28px; font-weight: bold; color: white;">
-              A
+            <!-- Logo -->
+            <div style="text-align: center;">
+              <img src="https://averroes.web.id/logo.png" alt="Averroes Logo" width="60" height="60" style="border-radius: 12px;">
             </div>
             <h1 style="margin: 16px 0 0; color: #1a1a1a; font-size: 24px;">Averroes</h1>
             <p style="margin: 4px 0 0; color: #6b7280; font-size: 14px;">Crypto Syariah & Keuangan Islami</p>
@@ -88,7 +89,9 @@ const handler = async (req: Request): Promise<Response> => {
           
           <!-- Footer -->
           <div style="text-align: center; margin-top: 32px; color: #9ca3af; font-size: 12px;">
-            <p style="margin: 0;">© 2024 Averroes. Crypto Syariah & Keuangan Islami.</p>
+          <!-- Footer -->
+          <div style="text-align: center; margin-top: 32px; color: #9ca3af; font-size: 12px;">
+            <p style="margin: 0;">© 2026 Averroes. Crypto Syariah & Keuangan Islami.</p>
             <p style="margin: 8px 0 0;">
               Email ini dikirim karena kamu mendaftar waitlist di averroes.app
             </p>
