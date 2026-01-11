@@ -15,7 +15,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-16 pb-8 overflow-hidden islamic-pattern">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-14 pb-6 overflow-hidden islamic-pattern">
       {/* Background decorations with parallax */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
@@ -32,30 +32,30 @@ const HeroSection = () => {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-8 md:py-12 relative z-10">
+      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-12 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mint border border-primary/10 mb-6 animate-fade-in">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium text-foreground">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-mint border border-primary/10 mb-4 sm:mb-6 animate-fade-in">
+            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs sm:text-sm font-medium text-foreground">
               Crypto Syariah & Keuangan Islami
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-3 sm:mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
             Crypto Syariah,{" "}
             <span className="text-gradient">Lebih Tenang & Terarah.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-5 sm:mb-8 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
             Pantau portofolio wallet (read-only), cek status syariah, hitung zakat, 
             belajar fiqh muamalah—dalam satu aplikasi.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 mb-6 sm:mb-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
             <Button
               onClick={() => scrollToSection("waitlist")}
               size="xl"
@@ -76,24 +76,24 @@ const HeroSection = () => {
           </div>
 
           {/* Trust microcopy */}
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm text-muted-foreground animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Shield className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
               <span>Tanpa transaksi</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-primary" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
               <span>Read-only</span>
             </div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-primary" />
-              <span>Edukasi berbasis fiqh muamalah</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <BookOpen className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
+              <span>Edukasi fiqh muamalah</span>
             </div>
           </div>
         </div>
 
         {/* App Mockup */}
-        <div className="mt-10 md:mt-14 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+        <div className="mt-6 sm:mt-10 md:mt-14 max-w-xs sm:max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
           <div className="relative">
             {/* Phone frame */}
             <div className="bg-foreground/5 backdrop-blur-sm rounded-[2.5rem] p-3 shadow-card">

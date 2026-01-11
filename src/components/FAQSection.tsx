@@ -79,25 +79,25 @@ const FAQSection = () => {
     : faqs.filter(faq => faq.category === activeCategory);
 
   return (
-    <section id="faq" className="py-12 md:py-16 bg-muted/30 relative overflow-hidden">
+    <section id="faq" className="py-8 sm:py-12 md:py-16 bg-muted/30 relative overflow-hidden">
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="max-w-2xl mx-auto">
           {/* Section header */}
           <div 
             ref={headerRef as React.RefObject<HTMLDivElement>}
-            className={`text-center mb-8 md:mb-10 scroll-reveal ${headerVisible ? "revealed" : ""}`}
+            className={`text-center mb-5 sm:mb-8 md:mb-10 scroll-reveal ${headerVisible ? "revealed" : ""}`}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-mint text-primary text-sm font-medium mb-4">
-              <HelpCircle className="w-4 h-4" />
+            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-mint text-primary text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+              <HelpCircle className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
               FAQ
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
+            <h2 className="text-lg sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-3">
               Pertanyaan yang Sering Ditanyakan
             </h2>
-            <p className="text-muted-foreground text-sm sm:text-base">
+            <p className="text-muted-foreground text-xs sm:text-base">
               Temukan jawaban untuk pertanyaan umum tentang Averroes
             </p>
           </div>
@@ -107,12 +107,12 @@ const FAQSection = () => {
             ref={contentRef as React.RefObject<HTMLDivElement>}
             className={`scroll-reveal ${contentVisible ? "revealed" : ""}`}
           >
-            <div className="flex flex-wrap justify-center gap-2 mb-8 px-2">
+            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-5 sm:mb-8 px-1">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 touch-manipulation ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 active:scale-95 touch-manipulation ${
                     activeCategory === category
                       ? "bg-primary text-primary-foreground shadow-md"
                       : "bg-card text-muted-foreground hover:bg-secondary hover:text-foreground border border-border/50"
@@ -124,27 +124,27 @@ const FAQSection = () => {
             </div>
 
             {/* FAQ Accordion */}
-            <Accordion type="single" collapsible className="space-y-3">
+            <Accordion type="single" collapsible className="space-y-2 sm:space-y-3">
               {filteredFaqs.map((faq, index) => {
                 const IconComponent = faq.icon;
                 return (
                   <AccordionItem
                     key={index}
                     value={`item-${index}`}
-                    className="bg-card rounded-2xl border border-border/50 px-4 sm:px-6 shadow-soft hover:shadow-card transition-all duration-300 data-[state=open]:border-primary/30 data-[state=open]:shadow-card group"
+                    className="bg-card rounded-xl sm:rounded-2xl border border-border/50 px-3 sm:px-6 shadow-soft hover:shadow-card transition-all duration-300 data-[state=open]:border-primary/30 data-[state=open]:shadow-card group"
                   >
-                    <AccordionTrigger className="text-left text-foreground font-semibold py-4 sm:py-5 hover:no-underline gap-3 sm:gap-4">
-                      <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-mint/50 flex items-center justify-center shrink-0 group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground transition-colors duration-300">
-                          <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-primary group-data-[state=open]:text-primary-foreground" />
+                    <AccordionTrigger className="text-left text-foreground font-semibold py-3 sm:py-5 hover:no-underline gap-2 sm:gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4 flex-1">
+                        <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-mint/50 flex items-center justify-center shrink-0 group-data-[state=open]:bg-primary group-data-[state=open]:text-primary-foreground transition-colors duration-300">
+                          <IconComponent className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-primary group-data-[state=open]:text-primary-foreground" />
                         </div>
-                        <div className="flex flex-col items-start gap-0.5 sm:gap-1">
-                          <span className="text-[10px] sm:text-xs text-muted-foreground font-normal">{faq.category}</span>
-                          <span className="text-sm sm:text-base group-hover:text-primary transition-colors leading-tight">{faq.question}</span>
+                        <div className="flex flex-col items-start gap-0.5">
+                          <span className="text-[9px] sm:text-xs text-muted-foreground font-normal">{faq.category}</span>
+                          <span className="text-xs sm:text-base group-hover:text-primary transition-colors leading-tight">{faq.question}</span>
                         </div>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-4 sm:pb-5 pl-12 sm:pl-14 leading-relaxed text-sm sm:text-base">
+                    <AccordionContent className="text-muted-foreground pb-3 sm:pb-5 pl-9 sm:pl-14 leading-relaxed text-xs sm:text-base">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -153,16 +153,16 @@ const FAQSection = () => {
             </Accordion>
 
             {/* Contact CTA */}
-            <div className="mt-10 text-center p-5 sm:p-6 bg-card rounded-2xl border border-border/50 shadow-soft">
-              <p className="text-muted-foreground mb-2 text-sm sm:text-base">
+            <div className="mt-6 sm:mt-10 text-center p-4 sm:p-6 bg-card rounded-xl sm:rounded-2xl border border-border/50 shadow-soft">
+              <p className="text-muted-foreground mb-1.5 sm:mb-2 text-xs sm:text-base">
                 Masih punya pertanyaan lain?
               </p>
               <a 
                 href="mailto:hello@averroes.app" 
-                className="inline-flex items-center gap-2 text-primary font-medium hover:underline active:scale-95 transition-transform touch-manipulation"
+                className="inline-flex items-center gap-1.5 sm:gap-2 text-primary font-medium text-sm sm:text-base hover:underline active:scale-95 transition-transform touch-manipulation"
               >
                 Hubungi kami
-                <span className="text-lg">→</span>
+                <span className="text-base sm:text-lg">→</span>
               </a>
             </div>
           </div>

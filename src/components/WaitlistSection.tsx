@@ -119,33 +119,33 @@ const WaitlistSection = () => {
     <section 
       id="waitlist" 
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-12 md:py-16 bg-gradient-to-b from-background to-mint/20 islamic-pattern relative overflow-hidden"
+      className="py-8 sm:py-12 md:py-16 bg-gradient-to-b from-background to-mint/20 islamic-pattern relative overflow-hidden"
     >
       {/* Top gradient for smooth transition */}
       <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className={`max-w-xl mx-auto scroll-reveal-scale ${isVisible ? "revealed" : ""}`}>
           {!isSubmitted ? (
-            <div className="bg-card rounded-3xl p-5 sm:p-6 md:p-10 shadow-card border border-border/50">
+            <div className="bg-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-card border border-border/50">
               {/* Header */}
-              <div className="text-center mb-6 md:mb-8">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-gold text-accent-foreground text-sm font-medium mb-4">
-                  <Send className="w-4 h-4" />
+              <div className="text-center mb-4 sm:mb-6 md:mb-8">
+                <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-gold text-accent-foreground text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+                  <Send className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                   Early Access
                 </span>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-foreground mb-2 sm:mb-3">
                   Dapatkan akses lebih dulu.
                 </h2>
-                <p className="text-muted-foreground text-sm sm:text-base">
+                <p className="text-muted-foreground text-xs sm:text-base">
                   Kami kirim undangan beta saat Averroes siap.
                 </p>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-foreground mb-1.5 sm:mb-2">
                     Email <span className="text-destructive">*</span>
                   </label>
                   <Input
@@ -154,13 +154,13 @@ const WaitlistSection = () => {
                     placeholder="kamu@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 rounded-xl text-base"
+                    className="h-10 sm:h-12 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-foreground mb-1.5 sm:mb-2">
                     Nama <span className="text-muted-foreground">(opsional)</span>
                   </label>
                   <Input
@@ -169,20 +169,20 @@ const WaitlistSection = () => {
                     placeholder="Nama kamu"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="h-12 rounded-xl text-base"
+                    className="h-10 sm:h-12 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     maxLength={100}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">
+                  <label className="block text-xs sm:text-sm font-medium text-foreground mb-2 sm:mb-3">
                     Saya tertarik: <span className="text-muted-foreground">(opsional)</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
                     {interests.map((interest) => (
                       <label
                         key={interest.id}
-                        className={`flex items-center gap-2 sm:gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200 active:scale-[0.98] touch-manipulation ${
+                        className={`flex items-center gap-1.5 sm:gap-3 p-2 sm:p-3 rounded-lg sm:rounded-xl border cursor-pointer transition-all duration-200 active:scale-[0.98] touch-manipulation ${
                           selectedInterests.includes(interest.id)
                             ? "border-primary bg-primary/5"
                             : "border-border hover:border-primary/30"
@@ -192,8 +192,9 @@ const WaitlistSection = () => {
                           id={interest.id}
                           checked={selectedInterests.includes(interest.id)}
                           onCheckedChange={() => handleInterestToggle(interest.id)}
+                          className="h-4 w-4 sm:h-5 sm:w-5"
                         />
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="text-xs sm:text-sm font-medium text-foreground">
                           {interest.label}
                         </span>
                       </label>
