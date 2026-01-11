@@ -106,7 +106,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Averroes <onboarding@resend.dev>",
+        from: "Averroes <info@averroes.web.id>",
         to: [email],
         subject: "✅ Kamu Sudah Masuk Waitlist Averroes!",
         html: emailHtml,
