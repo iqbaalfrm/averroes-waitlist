@@ -1,17 +1,20 @@
 import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Check, Share2, Send } from "lucide-react";
+import { Check, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const interests = [
-  { id: "edukasi", label: "Edukasi" },
+  { id: "edukasi_lms", label: "Edukasi / LMS" },
+  { id: "screener", label: "Screener" },
+  { id: "pasar", label: "Pasar Spot" },
   { id: "portofolio", label: "Portofolio" },
   { id: "zakat", label: "Zakat" },
-  { id: "screener", label: "Screener" },
+  { id: "pustaka", label: "Pustaka" },
+  { id: "chatbot", label: "Chatbot" },
+  { id: "kajian_reels", label: "Kajian / Reels" },
 ];
 
 const WaitlistSection = () => {
@@ -25,15 +28,15 @@ const WaitlistSection = () => {
 
   const handleInterestToggle = (id: string) => {
     setSelectedInterests((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     const trimmedEmail = email.trim().toLowerCase();
-    
+
     if (!trimmedEmail || !trimmedEmail.includes("@")) {
       toast({
         title: "Email tidak valid",
@@ -44,18 +47,15 @@ const WaitlistSection = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
-      const { error } = await supabase
-        .from("waitlist")
-        .insert({
-          email: trimmedEmail,
-          name: name.trim() || null,
-          interests: selectedInterests.length > 0 ? selectedInterests : null,
-        });
+      const { error } = await supabase.from("waitlist").insert({
+        email: trimmedEmail,
+        name: name.trim() || null,
+        interests: selectedInterests.length > 0 ? selectedInterests : null,
+      });
 
       if (error) {
-        // Check if it's a duplicate email error
         if (error.code === "23505") {
           toast({
             title: "Email sudah terdaftar",
@@ -65,35 +65,34 @@ const WaitlistSection = () => {
         } else {
           throw error;
         }
+
         setIsLoading(false);
         return;
       }
 
-      // Send confirmation email (don't block on failure)
-      supabase.functions.invoke("send-waitlist-email", {
-        body: {
-          email: trimmedEmail,
-          name: name.trim() || undefined,
-        },
-      }).then(({ error: emailError }) => {
-        if (emailError) {
-          console.error("Failed to send confirmation email:", emailError);
-        } else {
-          console.log("Confirmation email sent successfully");
-        }
-      });
+      supabase.functions
+        .invoke("send-waitlist-email", {
+          body: {
+            email: trimmedEmail,
+            name: name.trim() || undefined,
+          },
+        })
+        .then(({ error: emailError }) => {
+          if (emailError) {
+            console.error("Failed to send confirmation email:", emailError);
+          }
+        });
 
       setIsSubmitted(true);
-      
       toast({
-        title: "Berhasil! 🎉",
-        description: "Kamu sudah masuk waitlist Averroes. Cek email kamu!",
+        title: "Berhasil terdaftar",
+        description: "Kamu sudah masuk waitlist Averroes. Cek email kamu.",
       });
     } catch (error) {
       console.error("Waitlist error:", error);
       toast({
         title: "Terjadi kesalahan",
-        description: "Mohon coba lagi nanti.",
+        description: "Mohon coba lagi beberapa saat lagi.",
         variant: "destructive",
       });
     } finally {
@@ -103,65 +102,59 @@ const WaitlistSection = () => {
 
   const shareToWhatsApp = () => {
     const text = encodeURIComponent(
-      "Aku baru daftar waitlist Averroes - aplikasi crypto syariah & keuangan Islami! Yuk daftar juga: https://averroes.app"
+      "Aku baru daftar waitlist Averroes. Kalau kamu mau akses beta lebih dulu, daftar juga di Averroes."
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
 
   const shareToX = () => {
     const text = encodeURIComponent(
-      "Baru daftar waitlist @AverroesApp - Crypto Syariah & Keuangan Islami! 🌙✨ https://averroes.app"
+      "Baru daftar waitlist Averroes untuk akses beta lebih dulu. Produk ini fokus ke crypto syariah, edukasi, dan zakat."
     );
     window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
   };
 
   return (
-    <section 
-      id="waitlist" 
+    <section
+      id="waitlist"
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-8 sm:py-12 md:py-16 bg-gradient-to-b from-background to-mint/20 islamic-pattern relative overflow-hidden"
+      className="brand-shell relative py-12 md:py-16"
     >
-      {/* Top gradient for smooth transition */}
-      <div className="absolute inset-x-0 top-0 h-20 section-gradient-top pointer-events-none" />
-      
-      <div className="container mx-auto px-3 sm:px-4">
-        <div className={`max-w-xl mx-auto scroll-reveal-scale ${isVisible ? "revealed" : ""}`}>
+      <div className="container mx-auto px-4">
+        <div className={`scroll-reveal-scale ${isVisible ? "revealed" : ""}`}>
           {!isSubmitted ? (
-            <div className="bg-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-card border border-border/50">
-              {/* Header */}
-              <div className="text-center mb-4 sm:mb-6 md:mb-8">
-                <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-gold text-accent-foreground text-xs sm:text-sm font-medium mb-3 sm:mb-4">
-                  <Send className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                  Early Access
-                </span>
-                <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-foreground mb-2 sm:mb-3">
-                  Dapatkan akses lebih dulu.
+            <div className="brand-panel mx-auto max-w-3xl p-6 md:p-8">
+              <div className="mx-auto max-w-2xl text-center">
+                <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-primary">
+                  Waitlist beta
+                </p>
+                <h2 className="font-display mt-4 text-4xl font-bold leading-[1] tracking-[-0.04em] text-foreground md:text-5xl">
+                  Masuk lebih dulu saat Averroes dibuka
                 </h2>
-                <p className="text-muted-foreground text-xs sm:text-base">
-                  Kami kirim undangan beta saat Averroes siap.
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground md:text-base">
+                  Form-nya singkat. Email wajib, nama dan minat fitur opsional.
                 </p>
               </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
+              <form onSubmit={handleSubmit} className="mx-auto mt-8 max-w-2xl space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-foreground mb-1.5 sm:mb-2">
-                    Email <span className="text-destructive">*</span>
+                  <label htmlFor="email" className="mb-2 block text-sm font-bold text-foreground">
+                    Email
                   </label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="kamu@email.com"
+                    placeholder="nama@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-10 sm:h-12 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-foreground mb-1.5 sm:mb-2">
-                    Nama <span className="text-muted-foreground">(opsional)</span>
+                  <label htmlFor="name" className="mb-2 block text-sm font-bold text-foreground">
+                    Nama
+                    <span className="ml-2 font-medium text-muted-foreground">(opsional)</span>
                   </label>
                   <Input
                     id="name"
@@ -169,36 +162,35 @@ const WaitlistSection = () => {
                     placeholder="Nama kamu"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="h-10 sm:h-12 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     maxLength={100}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-foreground mb-2 sm:mb-3">
-                    Saya tertarik: <span className="text-muted-foreground">(opsional)</span>
-                  </label>
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
-                    {interests.map((interest) => (
-                      <label
-                        key={interest.id}
-                        className={`flex items-center gap-1.5 sm:gap-3 p-2 sm:p-3 rounded-lg sm:rounded-xl border cursor-pointer transition-all duration-200 active:scale-[0.98] touch-manipulation ${
-                          selectedInterests.includes(interest.id)
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        <Checkbox
-                          id={interest.id}
-                          checked={selectedInterests.includes(interest.id)}
-                          onCheckedChange={() => handleInterestToggle(interest.id)}
-                          className="h-4 w-4 sm:h-5 sm:w-5"
-                        />
-                        <span className="text-xs sm:text-sm font-medium text-foreground">
+                  <p className="mb-3 block text-sm font-bold text-foreground">
+                    Minat fitur
+                    <span className="ml-2 font-medium text-muted-foreground">(opsional)</span>
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {interests.map((interest) => {
+                      const isSelected = selectedInterests.includes(interest.id);
+
+                      return (
+                        <button
+                          key={interest.id}
+                          type="button"
+                          onClick={() => handleInterestToggle(interest.id)}
+                          className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors ${
+                            isSelected
+                              ? "border-primary/20 bg-secondary text-primary"
+                              : "border-border bg-card text-muted-foreground hover:border-primary/20 hover:bg-secondary hover:text-foreground"
+                          }`}
+                        >
                           {interest.label}
-                        </span>
-                      </label>
-                    ))}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -206,63 +198,49 @@ const WaitlistSection = () => {
                   type="submit"
                   size="xl"
                   variant="hero"
-                  className="w-full active:scale-[0.98] transition-transform touch-manipulation"
+                  className="mt-2 w-full"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2">
-                      <span className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                      <span className="h-5 w-5 rounded-full border-2 border-primary-foreground/35 border-t-primary-foreground animate-spin" />
                       Mendaftarkan...
                     </span>
                   ) : (
-                    "Masuk Waitlist"
+                    "Masuk waitlist"
                   )}
                 </Button>
 
-                <p className="text-xs text-center text-muted-foreground">
-                  Kami tidak spam. Kamu bisa unsubscribe kapan saja.
+                <p className="border-t border-border pt-4 text-center text-xs font-medium text-muted-foreground">
+                  Tidak ada spam. Kami hanya menghubungi kamu saat ada update yang relevan.
                 </p>
               </form>
             </div>
           ) : (
-            <div className="bg-card rounded-3xl p-5 sm:p-6 md:p-10 shadow-card border border-primary/20 text-center">
-              {/* Success state */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-hero mx-auto mb-6 flex items-center justify-center">
-                <Check className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
+            <div className="brand-panel mx-auto max-w-2xl p-6 text-center md:p-10">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[22px] bg-gradient-hero shadow-soft">
+                <Check className="h-10 w-10 text-primary-foreground" />
               </div>
 
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3">
-                Berhasil! Kamu sudah masuk waitlist ✅
+              <h2 className="mt-6 text-3xl font-extrabold text-foreground">
+                Kamu sudah masuk waitlist Averroes
               </h2>
-              <p className="text-muted-foreground mb-8 text-sm sm:text-base">
-                Kami akan menghubungi kamu saat Averroes siap diluncurkan.
+              <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-muted-foreground">
+                Saat batch beta berikutnya dibuka, kami akan menghubungi kamu lewat email.
+                Sambil menunggu, kamu bisa bagikan waitlist ini ke teman yang relevan.
               </p>
 
-              {/* Share buttons */}
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-foreground">
-                  Bagikan ke teman:
-                </p>
-                <div className="flex items-center justify-center gap-3">
-                  <Button
-                    onClick={shareToWhatsApp}
-                    variant="mint"
-                    className="gap-2 active:scale-[0.98] transition-transform touch-manipulation"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    WhatsApp
-                  </Button>
-                  <Button
-                    onClick={shareToX}
-                    variant="outline"
-                    className="gap-2 active:scale-[0.98] transition-transform touch-manipulation"
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                    X (Twitter)
-                  </Button>
-                </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Button onClick={shareToWhatsApp} variant="mint" className="gap-2">
+                  <Share2 className="h-4 w-4" />
+                  WhatsApp
+                </Button>
+                <Button onClick={shareToX} variant="outline" className="gap-2">
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  X
+                </Button>
               </div>
             </div>
           )}

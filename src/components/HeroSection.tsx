@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, BookOpen, Eye } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useParallax } from "@/hooks/useParallax";
+import heroPhoneImage from "@/assets/hero-phone.jpg";
 
 const HeroSection = () => {
-  const { offset: offset1 } = useParallax({ speed: 0.15 });
-  const { offset: offset2 } = useParallax({ speed: 0.25 });
-  const { offset: offset3 } = useParallax({ speed: 0.1 });
+  const { offset: offset1 } = useParallax({ speed: 0.08 });
+  const { offset: offset2 } = useParallax({ speed: 0.12 });
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -15,165 +15,82 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center pt-14 pb-6 overflow-hidden islamic-pattern">
-      {/* Background decorations with parallax */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute top-20 right-[10%] w-72 h-72 bg-primary/10 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
+    <section className="brand-shell relative overflow-hidden pb-14 pt-28 md:pb-20 md:pt-36">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute -left-12 top-20 h-32 w-32 rounded-full bg-gold-light/35 blur-3xl transition-transform duration-100"
           style={{ transform: `translateY(${offset1}px)` }}
         />
-        <div 
-          className="absolute bottom-20 left-[5%] w-96 h-96 bg-gold/10 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
+        <div
+          className="absolute right-0 top-14 h-44 w-44 rounded-full bg-mint-dark/28 blur-3xl transition-transform duration-100"
           style={{ transform: `translateY(${offset2}px)` }}
-        />
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-mint/30 rounded-full blur-3xl transition-transform duration-100 will-change-transform" 
-          style={{ transform: `translate(-50%, calc(-50% + ${offset3}px))` }}
         />
       </div>
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-12 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-mint border border-primary/10 mb-4 sm:mb-6 animate-fade-in">
-            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs sm:text-sm font-medium text-foreground">
-              Crypto Syariah & Keuangan Islami
-            </span>
-          </div>
+      <div className="container relative z-10 mx-auto px-4">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center">
+          <div className="max-w-xl">
+            <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-primary animate-fade-in-up">
+              Averroes beta
+            </p>
 
-          {/* Headline */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-3 sm:mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            Crypto Syariah,{" "}
-            <span className="text-gradient">Lebih Tenang & Terarah.</span>
-          </h1>
-
-          {/* Subheadline */}
-          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-5 sm:mb-8 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-            Pantau portofolio wallet (read-only), cek status syariah, hitung zakat, 
-            belajar fiqh muamalah—dalam satu aplikasi.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 mb-6 sm:mb-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <Button
-              onClick={() => scrollToSection("waitlist")}
-              size="xl"
-              variant="hero"
-              className="w-full sm:w-auto"
+            <h1
+              className="font-display mt-6 text-5xl font-bold leading-[0.96] tracking-[-0.05em] text-foreground sm:text-6xl lg:text-[4.2rem] animate-fade-in-up"
+              style={{ animationDelay: "0.08s" }}
             >
-              Gabung Waitlist
-              <ArrowRight className="ml-1" />
-            </Button>
-            <Button
-              onClick={() => scrollToSection("fitur")}
-              size="xl"
-              variant="outline"
-              className="w-full sm:w-auto"
+              Aset digital syariah
+              <br />
+              yang lebih tenang
+              <br />
+              untuk dipahami.
+            </h1>
+
+            <p
+              className="mt-5 max-w-lg text-base leading-8 text-muted-foreground sm:text-lg animate-fade-in-up"
+              style={{ animationDelay: "0.16s" }}
             >
-              Lihat Fitur
-            </Button>
+              Averroes menyatukan edukasi, screening syariah, portofolio, dan
+              kalkulator zakat dalam pengalaman produk yang lebih ringkas dan lebih
+              mudah dipahami.
+            </p>
+
+            <div
+              className="mt-8 flex flex-wrap items-center gap-3 animate-fade-in-up"
+              style={{ animationDelay: "0.24s" }}
+            >
+              <Button onClick={() => scrollToSection("waitlist")} size="xl" variant="hero">
+                Masuk waitlist
+                <ArrowRight className="ml-1" />
+              </Button>
+              <Button onClick={() => scrollToSection("fitur")} size="xl" variant="outline">
+                Lihat produk
+              </Button>
+            </div>
           </div>
 
-          {/* Trust microcopy */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm text-muted-foreground animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Shield className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
-              <span>Tanpa transaksi</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Eye className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
-              <span>Read-only</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <BookOpen className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-primary" />
-              <span>Edukasi fiqh muamalah</span>
-            </div>
-          </div>
-        </div>
-
-        {/* App Mockup */}
-        <div className="mt-6 sm:mt-10 md:mt-14 max-w-xs sm:max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
-          <div className="relative">
-            {/* Phone frame */}
-            <div className="bg-foreground/5 backdrop-blur-sm rounded-[2.5rem] p-3 shadow-card">
-              <div className="bg-card rounded-[2rem] overflow-hidden shadow-soft">
-                {/* Phone notch */}
-                <div className="h-7 bg-muted flex items-center justify-center">
-                  <div className="w-20 h-5 bg-foreground/10 rounded-full" />
-                </div>
-                
-                {/* App content */}
-                <div className="p-5 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Selamat Siang 👋</p>
-                      <p className="font-semibold text-foreground">Ahmad</p>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
-                      <span className="text-primary-foreground font-bold text-sm">A</span>
-                    </div>
+          <div
+            className="relative mx-auto w-full max-w-[312px] animate-fade-in-up lg:ml-auto"
+            style={{ animationDelay: "0.18s" }}
+          >
+            <div className="absolute inset-x-8 top-20 h-20 rounded-full bg-primary/8 blur-3xl" />
+            <div className="relative mx-auto w-full max-w-[300px]">
+              <div className="rounded-[2.85rem] border-[7px] border-slate-900 bg-slate-900 p-[7px] shadow-[0_24px_50px_-28px_rgba(15,23,42,0.38)]">
+                <div className="overflow-hidden rounded-[2.5rem] bg-card">
+                  <div className="flex justify-center pt-3">
+                    <div className="h-1.5 w-24 rounded-full bg-foreground/12" />
                   </div>
 
-                  {/* Prayer Cards */}
-                  <div className="space-y-3">
-                    {/* Jakarta */}
-                    <div className="bg-gradient-hero rounded-2xl p-4 text-primary-foreground">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-xs opacity-80">📍 Jakarta</p>
-                          <p className="text-2xl font-bold mt-1">12:15</p>
-                          <p className="text-sm opacity-80">Dzuhur</p>
-                        </div>
-                        <div className="text-right text-xs opacity-70">
-                          <p>Ashar: 15:28</p>
-                          <p>Maghrib: 17:58</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Mekkah */}
-                    <div className="bg-gradient-gold rounded-2xl p-4 text-accent-foreground">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-xs opacity-80">🕋 Mekkah</p>
-                          <p className="text-2xl font-bold mt-1">08:15</p>
-                          <p className="text-sm opacity-80">Dhuha</p>
-                        </div>
-                        <div className="text-right text-xs opacity-70">
-                          <p>Dzuhur: 12:18</p>
-                          <p>Ashar: 15:38</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quick stats */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-muted rounded-xl p-3 text-center">
-                      <p className="text-lg font-bold text-primary">✓</p>
-                      <p className="text-[10px] text-muted-foreground">Syariah</p>
-                    </div>
-                    <div className="bg-muted rounded-xl p-3 text-center">
-                      <p className="text-lg font-bold text-foreground">2.5%</p>
-                      <p className="text-[10px] text-muted-foreground">Zakat</p>
-                    </div>
-                    <div className="bg-muted rounded-xl p-3 text-center">
-                      <p className="text-lg font-bold text-foreground">12</p>
-                      <p className="text-[10px] text-muted-foreground">Kelas</p>
+                  <div className="px-3 pb-3 pt-2">
+                    <div className="overflow-hidden rounded-[2.1rem] border border-border bg-background shadow-soft [aspect-ratio:367/890]">
+                      <img
+                        src={heroPhoneImage}
+                        alt="Preview aplikasi Averroes"
+                        className="h-full w-full object-cover object-top"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Floating badges */}
-            <div className="absolute -left-4 top-1/4 bg-card rounded-xl px-3 py-2 shadow-card animate-float">
-              <p className="text-xs font-medium text-primary">🔒 Non-custodial</p>
-            </div>
-            <div className="absolute -right-4 top-1/2 bg-card rounded-xl px-3 py-2 shadow-card animate-float" style={{ animationDelay: "0.5s" }}>
-              <p className="text-xs font-medium text-foreground">✨ Syariah-first</p>
             </div>
           </div>
         </div>

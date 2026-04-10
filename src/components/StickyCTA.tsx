@@ -8,11 +8,9 @@ const StickyCTA = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show after scrolling past hero section (approx 600px)
-      const shouldShow = window.scrollY > 600;
-      
-      // Hide when near waitlist section
+      const shouldShow = window.scrollY > 640;
       const waitlistSection = document.getElementById("waitlist");
+
       if (waitlistSection) {
         const rect = waitlistSection.getBoundingClientRect();
         if (rect.top < window.innerHeight && rect.bottom > 0) {
@@ -20,7 +18,7 @@ const StickyCTA = () => {
           return;
         }
       }
-      
+
       setIsVisible(shouldShow && !isDismissed);
     };
 
@@ -38,26 +36,25 @@ const StickyCTA = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden animate-fade-in safe-area-bottom">
-      <div className="bg-background/95 backdrop-blur-lg border-t border-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lg">
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={scrollToWaitlist}
-            size="lg"
-            variant="hero"
-            className="flex-1 active:scale-[0.98] transition-transform touch-manipulation"
-          >
-            Gabung Waitlist
-            <ArrowRight className="ml-1 w-4 h-4" />
-          </Button>
-          <button
-            onClick={() => setIsDismissed(true)}
-            className="p-3 -m-1 text-muted-foreground hover:text-foreground active:scale-95 transition-all touch-manipulation"
-            aria-label="Tutup"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <div className="safe-area-bottom fixed bottom-0 left-0 right-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+      <div className="brand-panel flex items-center gap-3 px-4 py-3 shadow-card">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-extrabold text-foreground">Masuk waitlist Averroes</p>
+          <p className="truncate text-xs font-medium text-muted-foreground">
+            Dapatkan info saat batch beta berikutnya dibuka.
+          </p>
         </div>
+        <Button onClick={scrollToWaitlist} size="lg" variant="hero" className="px-5">
+          Daftar
+          <ArrowRight className="h-4 w-4" />
+        </Button>
+        <button
+          onClick={() => setIsDismissed(true)}
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground"
+          aria-label="Tutup"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

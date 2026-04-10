@@ -13,8 +13,9 @@ const Navbar = () => {
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 16);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -28,132 +29,128 @@ const Navbar = () => {
   };
 
   const toggleTheme = () => {
-    // Add transitioning class for smooth animation
-    document.documentElement.classList.add('transitioning');
+    document.documentElement.classList.add("transitioning");
     setTheme(theme === "dark" ? "light" : "dark");
-    
-    // Remove transitioning class after animation completes
+
     setTimeout(() => {
-      document.documentElement.classList.remove('transitioning');
+      document.documentElement.classList.remove("transitioning");
     }, 400);
   };
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-background/80 backdrop-blur-lg shadow-soft"
+          ? "border-b border-border/80 bg-background/92 backdrop-blur-xl"
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <a href="#" className="flex items-center group">
-            <div className="w-10 h-10 overflow-hidden group-hover:scale-110 transition-all duration-300">
-              <img 
-                src={averroesIcon} 
-                alt="Averroes Logo" 
-                className="w-full h-full object-contain" 
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <a href="#" className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border bg-white p-2 shadow-soft">
+              <img
+                src={averroesIcon}
+                alt="Averroes logo"
+                className="h-full w-full object-contain"
               />
             </div>
-            <span className="-ml-1 font-semibold text-lg text-primary group-hover:text-primary/80 transition-colors duration-300">Averroes</span>
+            <div>
+              <p className="text-base font-extrabold text-foreground">Averroes</p>
+              <p className="text-xs font-medium text-muted-foreground">Waitlist beta</p>
+            </div>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden items-center gap-7 md:flex">
             <button
               onClick={() => scrollToSection("fitur")}
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               Fitur
             </button>
             <button
               onClick={() => scrollToSection("cara-kerja")}
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
-              Cara Kerja
+              Cara kerja
             </button>
             <button
               onClick={() => scrollToSection("faq")}
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               FAQ
             </button>
           </div>
 
-          {/* Desktop CTA & Theme Toggle */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300 hover:shadow-soft"
-              aria-label="Toggle dark mode"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition-colors hover:bg-secondary"
+              aria-label="Toggle theme"
             >
-              {mounted && (
-                theme === "dark" ? (
-                  <Sun size={20} className="text-gold" />
+              {mounted &&
+                (theme === "dark" ? (
+                  <Sun size={18} className="text-gold" />
                 ) : (
-                  <Moon size={20} className="text-primary" />
-                )
-              )}
+                  <Moon size={18} className="text-primary" />
+                ))}
             </button>
-            <Button onClick={() => scrollToSection("waitlist")} size="lg">
-              Gabung Waitlist
+            <Button onClick={() => scrollToSection("waitlist")} size="lg" variant="hero">
+              Gabung waitlist
             </Button>
           </div>
 
-          {/* Mobile Menu Button & Theme Toggle */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-secondary text-foreground transition-colors"
-              aria-label="Toggle dark mode"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground transition-colors hover:bg-secondary"
+              aria-label="Toggle theme"
             >
-              {mounted && (
-                theme === "dark" ? (
-                  <Sun size={20} className="text-gold" />
+              {mounted &&
+                (theme === "dark" ? (
+                  <Sun size={18} className="text-gold" />
                 ) : (
-                  <Moon size={20} className="text-primary" />
-                )
-              )}
+                  <Moon size={18} className="text-primary" />
+                ))}
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground"
+              aria-label="Open navigation menu"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border animate-fade-in">
-            <div className="flex flex-col p-4 gap-2">
+          <div className="brand-panel mt-3 overflow-hidden md:hidden">
+            <div className="flex flex-col gap-2 p-3">
               <button
                 onClick={() => scrollToSection("fitur")}
-                className="py-3 px-4 text-left text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               >
                 Fitur
               </button>
               <button
                 onClick={() => scrollToSection("cara-kerja")}
-                className="py-3 px-4 text-left text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               >
-                Cara Kerja
+                Cara kerja
               </button>
               <button
                 onClick={() => scrollToSection("faq")}
-                className="py-3 px-4 text-left text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               >
                 FAQ
               </button>
               <Button
                 onClick={() => scrollToSection("waitlist")}
-                className="mt-2"
+                className="mt-1 w-full"
                 size="lg"
+                variant="hero"
               >
-                Gabung Waitlist
+                Gabung waitlist
               </Button>
             </div>
           </div>
