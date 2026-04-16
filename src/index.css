@@ -6,52 +6,51 @@
 
 @layer base {
   :root {
-    --background: 180 23% 98%;
-    --foreground: 222 47% 11%;
+    --background: 190 30% 98%;
+    --foreground: 217 29% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 217 29% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 217 29% 16%;
 
     --primary: 175 77% 26%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 152 81% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 186 62% 95%;
+    --secondary-foreground: 217 29% 16%;
 
-    --muted: 37 100% 97%;
-    --muted-foreground: 211 17% 39%;
+    --muted: 210 32% 96%;
+    --muted-foreground: 215 16% 43%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 43 90% 52%;
+    --accent-foreground: 217 29% 16%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 206 28% 88%;
-    --input: 206 28% 88%;
+    --border: 210 24% 88%;
+    --input: 210 24% 88%;
     --ring: 175 77% 26%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
     --emerald: 175 77% 26%;
     --emerald-light: 172 84% 40%;
-    --mint: 152 81% 96%;
-    --mint-dark: 151 65% 87%;
-    --gold: 38 92% 50%;
-    --gold-light: 45 93% 89%;
-    --cream: 37 100% 97%;
+    --mint: 186 62% 95%;
+    --mint-dark: 174 53% 88%;
+    --gold: 43 90% 52%;
+    --gold-light: 48 96% 82%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(175 77% 26%) 0%, hsl(172 84% 40%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(152 81% 98%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(45 93% 89%) 0%, hsl(38 92% 50% / 0.22) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(152 81% 96%) 0%, hsl(180 23% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(175 77% 23%) 0%, hsl(174 74% 36%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(190 30% 98%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(48 96% 82%) 0%, hsl(43 90% 52% / 0.18) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(186 62% 95%) 0%, hsl(0 0% 100%) 100%);
 
-    --shadow-soft: 0 10px 30px -18px hsl(222 47% 11% / 0.16);
-    --shadow-card: 0 16px 40px -26px hsl(222 47% 11% / 0.18);
-    --shadow-hover: 0 18px 45px -28px hsl(175 77% 26% / 0.28);
+    --shadow-soft: 0 14px 34px -24px hsl(217 29% 16% / 0.2);
+    --shadow-card: 0 24px 60px -36px hsl(217 29% 16% / 0.28);
+    --shadow-hover: 0 20px 46px -30px hsl(175 77% 26% / 0.32);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -64,46 +63,45 @@
   }
 
   .dark {
-    --background: 164 28% 10%;
+    --background: 180 19% 9%;
     --foreground: 210 40% 96%;
 
-    --card: 165 24% 13%;
+    --card: 180 16% 12%;
     --card-foreground: 210 40% 96%;
 
-    --popover: 165 24% 13%;
+    --popover: 180 16% 12%;
     --popover-foreground: 210 40% 96%;
 
     --primary: 172 84% 40%;
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 180 19% 9%;
 
-    --secondary: 164 21% 18%;
+    --secondary: 178 18% 17%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 164 18% 16%;
-    --muted-foreground: 210 18% 70%;
+    --muted: 178 14% 16%;
+    --muted-foreground: 209 14% 72%;
 
     --accent: 38 92% 50%;
-    --accent-foreground: 222 47% 11%;
+    --accent-foreground: 180 19% 9%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 164 15% 24%;
-    --input: 164 15% 24%;
+    --border: 178 13% 24%;
+    --input: 178 13% 24%;
     --ring: 172 84% 40%;
 
     --emerald: 172 84% 40%;
     --emerald-light: 171 73% 48%;
-    --mint: 165 21% 18%;
-    --mint-dark: 164 20% 22%;
+    --mint: 178 18% 17%;
+    --mint-dark: 176 18% 24%;
     --gold: 38 92% 50%;
     --gold-light: 45 60% 26%;
-    --cream: 164 18% 16%;
 
     --gradient-hero: linear-gradient(135deg, hsl(175 77% 26%) 0%, hsl(172 84% 40%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(165 24% 13%) 0%, hsl(164 21% 18%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(180 16% 12%) 0%, hsl(178 18% 17%) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(45 60% 26%) 0%, hsl(38 92% 50% / 0.2) 100%);
-    --gradient-mint: linear-gradient(135deg, hsl(164 21% 18%) 0%, hsl(164 18% 16%) 100%);
+    --gradient-mint: linear-gradient(135deg, hsl(178 18% 17%) 0%, hsl(180 16% 12%) 100%);
 
     --shadow-soft: 0 10px 30px -18px hsl(0 0% 0% / 0.45);
     --shadow-card: 0 16px 40px -24px hsl(0 0% 0% / 0.5);
@@ -135,12 +133,17 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     background-image:
-      radial-gradient(circle at top left, hsl(var(--gold-light) / 0.55), transparent 28%),
-      radial-gradient(circle at top right, hsl(var(--mint-dark) / 0.35), transparent 30%),
-      linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px),
-      linear-gradient(180deg, hsl(37 100% 97%) 0%, hsl(var(--background)) 28%, hsl(var(--background)) 100%);
-    background-size: auto, auto, 28px 28px, 28px 28px, auto;
+      linear-gradient(hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(180deg, hsl(190 38% 97%) 0%, hsl(var(--background)) 42%, hsl(var(--background)) 100%);
+    background-size: 32px 32px, 32px 32px, auto;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    overflow-x: hidden;
   }
 
   ::selection {
@@ -171,14 +174,14 @@
   .brand-panel {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: 20px;
+    border-radius: 8px;
     box-shadow: var(--shadow-soft);
   }
 
   .brand-panel-soft {
     background: linear-gradient(180deg, hsl(var(--secondary)) 0%, hsl(var(--card)) 100%);
     border: 1px solid hsl(var(--border));
-    border-radius: 20px;
+    border-radius: 8px;
     box-shadow: var(--shadow-soft);
   }
 
@@ -187,7 +190,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.9rem;
-    border-radius: 999px;
+    border-radius: 8px;
     border: 1px solid hsl(var(--border));
     background: hsl(var(--card) / 0.92);
     color: hsl(var(--foreground));
@@ -207,7 +210,7 @@
     justify-content: center;
     width: 3rem;
     height: 3rem;
-    border-radius: 16px;
+    border-radius: 8px;
     background: hsl(var(--secondary));
     border: 1px solid hsl(var(--primary) / 0.12);
     color: hsl(var(--primary));
@@ -215,7 +218,7 @@
 
   .brand-metric {
     border: 1px solid hsl(var(--border));
-    border-radius: 18px;
+    border-radius: 8px;
     background: hsl(var(--card) / 0.9);
     padding: 1rem;
   }
@@ -223,7 +226,7 @@
   .brand-grid-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: 20px;
+    border-radius: 8px;
     box-shadow: var(--shadow-soft);
     transition:
       border-color 0.2s ease,
@@ -247,7 +250,7 @@
     gap: 0.5rem;
     padding: 0.5rem 0.85rem;
     border: 1px solid hsl(var(--border));
-    border-radius: 999px;
+    border-radius: 8px;
     background: hsl(var(--card));
     box-shadow: var(--shadow-soft);
     font-size: 0.8rem;
@@ -259,41 +262,20 @@
     position: relative;
     overflow: hidden;
     background:
-      radial-gradient(circle at top right, hsl(var(--gold-light) / 0.95), transparent 34%),
+      linear-gradient(135deg, hsl(var(--gold-light) / 0.22) 0%, transparent 34%),
       linear-gradient(140deg, hsl(var(--secondary)) 0%, hsl(var(--card)) 42%, hsl(var(--card)) 100%);
     border: 1px solid hsl(var(--border));
-    border-radius: 28px;
+    border-radius: 8px;
     box-shadow: var(--shadow-card);
-  }
-
-  .brand-spotlight::before {
-    content: "";
-    position: absolute;
-    inset: auto -10% -35% auto;
-    width: 240px;
-    height: 240px;
-    border-radius: 999px;
-    background: hsl(var(--primary) / 0.08);
-    filter: blur(10px);
   }
 
   .bento-card {
     position: relative;
     overflow: hidden;
     border: 1px solid hsl(var(--border));
-    border-radius: 28px;
+    border-radius: 8px;
     background: hsl(var(--card) / 0.92);
     box-shadow: var(--shadow-soft);
-  }
-
-  .bento-card::after {
-    content: "";
-    position: absolute;
-    inset: auto -40px -40px auto;
-    width: 120px;
-    height: 120px;
-    border-radius: 999px;
-    background: hsl(var(--primary) / 0.06);
   }
 
   .brand-section {

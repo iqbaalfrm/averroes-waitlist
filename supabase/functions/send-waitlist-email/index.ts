@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -100,29 +100,38 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Send email using Resend REST API
-    const res = await fetch("https://api.resend.com/emails", {
+    // Send email using Brevo (Sendinblue) REST API
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        "Accept": "application/json",
+        "api-key": BREVO_API_KEY || "",
       },
       body: JSON.stringify({
-        from: "Averroes <info@averroes.web.id>",
-        to: [email],
+        sender: {
+          name: "Averroes",
+          email: "hello@averroes.app"
+        },
+        to: [
+          {
+            email: email,
+            name: displayName
+          }
+        ],
         subject: "✅ Kamu Sudah Masuk Waitlist Averroes!",
-        html: emailHtml,
+        htmlContent: emailHtml,
       }),
     });
 
     if (!res.ok) {
       const errorData = await res.text();
-      console.error("Resend API error:", errorData);
+      console.error("Brevo API error:", errorData);
       throw new Error(`Failed to send email: ${errorData}`);
     }
 
     const data = await res.json();
-    console.log("Email sent successfully:", data);
+    console.log("Email sent successfully via Brevo:", data);
 
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,

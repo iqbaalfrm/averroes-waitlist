@@ -6,6 +6,7 @@ import WaitlistSection from "@/components/WaitlistSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import StickyCTA from "@/components/StickyCTA";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       </main>
       <Footer />
       <StickyCTA />
+      <ScrollToTopButton />
     </div>
   );
 };

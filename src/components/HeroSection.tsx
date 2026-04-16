@@ -1,12 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { useParallax } from "@/hooks/useParallax";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import heroPhoneImage from "@/assets/hero-phone.jpg";
 
 const HeroSection = () => {
-  const { offset: offset1 } = useParallax({ speed: 0.08 });
-  const { offset: offset2 } = useParallax({ speed: 0.12 });
-
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -15,84 +11,81 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="brand-shell relative overflow-hidden pb-14 pt-28 md:pb-20 md:pt-36">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute -left-12 top-20 h-32 w-32 rounded-full bg-gold-light/35 blur-3xl transition-transform duration-100"
-          style={{ transform: `translateY(${offset1}px)` }}
-        />
-        <div
-          className="absolute right-0 top-14 h-44 w-44 rounded-full bg-mint-dark/28 blur-3xl transition-transform duration-100"
-          style={{ transform: `translateY(${offset2}px)` }}
-        />
-      </div>
+    <section className="relative overflow-hidden bg-background pt-32 pb-16 md:pt-36 md:pb-24 border-b border-border/30">
+      {/* Dekorasi Latar - Ambien Premium */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-80 pointer-events-none" />
 
       <div className="container relative z-10 mx-auto px-4">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-center">
-          <div className="max-w-xl">
-            <p className="text-sm font-extrabold uppercase tracking-[0.22em] text-primary animate-fade-in-up">
-              Averroes beta
-            </p>
+        <div className="mx-auto grid max-w-7xl gap-12 lg:gap-16 lg:grid-cols-12 lg:items-center">
+          
+          {/* Kolom Kiri: Hirarki Tipografi Terfokus (Dominan) */}
+          <div className="max-w-2xl lg:col-span-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-primary animate-fade-in-up">
+              <span className="text-sm">👋</span> Selamat Datang di Averroes
+            </div>
 
             <h1
-              className="font-display mt-6 text-5xl font-bold leading-[0.96] tracking-[-0.05em] text-foreground sm:text-6xl lg:text-[4.2rem] animate-fade-in-up"
-              style={{ animationDelay: "0.08s" }}
+              className="mt-6 font-display text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl md:text-7xl leading-[1.05] animate-fade-in-up"
+              style={{ animationDelay: "0.1s" }}
             >
-              Aset digital syariah
-              <br />
-              yang lebih tenang
-              <br />
-              untuk dipahami.
+              Mulai Investasi Kripto <br className="hidden md:block"/> Tanpa Rasa Ragu.
             </h1>
 
             <p
-              className="mt-5 max-w-lg text-base leading-8 text-muted-foreground sm:text-lg animate-fade-in-up"
-              style={{ animationDelay: "0.16s" }}
+              className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl animate-fade-in-up max-w-xl"
+              style={{ animationDelay: "0.2s" }}
             >
-              Averroes menyatukan edukasi, screening syariah, portofolio, dan
-              kalkulator zakat dalam pengalaman produk yang lebih ringkas dan lebih
-              mudah dipahami.
+              Nggak perlu pusing mikirin halal-haram koin atau ribet ngitung zakat. Averroes bantu kamu <em className="not-italic text-foreground font-semibold">screening</em> portofolio biar investasi makin tenang.
             </p>
 
             <div
-              className="mt-8 flex flex-wrap items-center gap-3 animate-fade-in-up"
-              style={{ animationDelay: "0.24s" }}
+              className="mt-10 flex flex-col sm:flex-row gap-4 animate-fade-in-up"
+              style={{ animationDelay: "0.3s" }}
             >
-              <Button onClick={() => scrollToSection("waitlist")} size="xl" variant="hero">
-                Masuk waitlist
-                <ArrowRight className="ml-1" />
-              </Button>
-              <Button onClick={() => scrollToSection("fitur")} size="xl" variant="outline">
-                Lihat produk
+              <Button onClick={() => scrollToSection("waitlist")} size="xl" variant="hero" className="w-full sm:w-auto shadow-sm transition-transform hover:-translate-y-0.5">
+                Mulai Eksplorasi
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
-          </div>
 
-          <div
-            className="relative mx-auto w-full max-w-[312px] animate-fade-in-up lg:ml-auto"
-            style={{ animationDelay: "0.18s" }}
-          >
-            <div className="absolute inset-x-8 top-20 h-20 rounded-full bg-primary/8 blur-3xl" />
-            <div className="relative mx-auto w-full max-w-[300px]">
-              <div className="rounded-[2.85rem] border-[7px] border-slate-900 bg-slate-900 p-[7px] shadow-[0_24px_50px_-28px_rgba(15,23,42,0.38)]">
-                <div className="overflow-hidden rounded-[2.5rem] bg-card">
-                  <div className="flex justify-center pt-3">
-                    <div className="h-1.5 w-24 rounded-full bg-foreground/12" />
+            <div
+              className="mt-12 grid gap-4 sm:grid-cols-2 animate-fade-in-up"
+              style={{ animationDelay: "0.4s" }}
+            >
+              {[
+                "Edukasi bahasa manusia",
+                "Screener koin transparan",
+                "Integrasi dompet (Read-only)",
+                "Hitung zakat tinggal pencet",
+              ].map((benefit) => (
+                <div key={benefit} className="flex items-center gap-3 group">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                   </div>
-
-                  <div className="px-3 pb-3 pt-2">
-                    <div className="overflow-hidden rounded-[2.1rem] border border-border bg-background shadow-soft [aspect-ratio:367/890]">
-                      <img
-                        src={heroPhoneImage}
-                        alt="Preview aplikasi Averroes"
-                        className="h-full w-full object-cover object-top"
-                      />
-                    </div>
-                  </div>
+                  <span className="text-sm font-semibold text-foreground/80 transition-colors group-hover:text-foreground">{benefit}</span>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
+
+          {/* Kolom Kanan: Visual Mockup */}
+          <div
+            className="relative mx-auto w-full max-w-[20rem] sm:max-w-[22rem] lg:max-w-[24rem] lg:col-span-5 animate-fade-in-up mt-12 lg:mt-0"
+            style={{ animationDelay: "0.4s" }}
+          >
+            {/* Soft Ambient Glow */}
+            <div className="absolute inset-0 z-0 bg-primary/20 blur-[80px] rounded-full transform scale-90 opacity-70 pointer-events-none" />
+            
+            {/* Bodi Gambar Image Nyata */}
+            <div className="relative z-10 w-full overflow-hidden rounded-[2rem] border border-border/40 bg-background shadow-2xl shadow-primary/10 transition-transform duration-700 ease-out hover:-translate-y-2 hover:shadow-primary/20">
+              <img
+                src={heroPhoneImage}
+                alt="Averroes App Interface"
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

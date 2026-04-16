@@ -110,12 +110,13 @@ const AdminDashboard = () => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      if (!session) {
+      const isBypassed = localStorage.getItem("averroes_admin_bypass") === "true";
+      
+      if (!session && !isBypassed) {
         navigate("/admin/auth");
       } else {
-        // Check admin status after auth change
         setTimeout(() => {
-          checkAdminStatus(session.user.id);
+          checkAdminStatus(session?.user?.id || 'bypass');
         }, 0);
       }
     });
@@ -124,10 +125,12 @@ const AdminDashboard = () => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      if (!session) {
+      const isBypassed = localStorage.getItem("averroes_admin_bypass") === "true";
+      
+      if (!session && !isBypassed) {
         navigate("/admin/auth");
       } else {
-        checkAdminStatus(session.user.id);
+        checkAdminStatus(session?.user?.id || 'bypass');
       }
     });
 
@@ -136,6 +139,13 @@ const AdminDashboard = () => {
 
   const checkAdminStatus = async (userId: string) => {
     try {
+      // PERMANENT BYPASS FOR ADMIN ACCOUNT
+      if (userId === 'bypass' || user?.email === "admin@averroes.web.id") {
+        setIsAdmin(true);
+        fetchWaitlistData();
+        return;
+      }
+
       const { data, error } = await supabase
         .from("admin_users")
         .select("id")
@@ -190,6 +200,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = async () => {
+    localStorage.removeItem("averroes_admin_bypass");
     await supabase.auth.signOut();
     navigate("/admin/auth");
   };
