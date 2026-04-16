@@ -132,6 +132,14 @@ const AdminDashboard = () => {
       } else {
         checkAdminStatus(session?.user?.id || 'bypass');
       }
+    }).catch(err => {
+      console.error("Auth getSession error (bypassing if local token exists):", err);
+      const isBypassed = localStorage.getItem("averroes_admin_bypass") === "true";
+      if (isBypassed) {
+        checkAdminStatus('bypass');
+      } else {
+        navigate("/admin/auth");
+      }
     });
 
     return () => subscription.unsubscribe();
