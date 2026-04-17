@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,21 +26,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, FileText, Save, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface EmailTemplate {
-  id: string;
-  name: string;
-  subject: string;
-  greeting: string;
-  main_message: string;
-  update_title: string;
-  updates: string[];
-  closing_message: string;
-  cta_text: string;
-  cta_url: string;
-  created_at: string;
-  updated_at: string;
-}
+import {
+  deleteLocalEmailTemplate,
+  getFallbackEmailTemplates,
+  saveLocalEmailTemplate,
+  type SavedEmailTemplate as EmailTemplate,
+} from "@/lib/emailTemplates";
 
 const defaultNewTemplate: Omit<EmailTemplate, "id" | "created_at" | "updated_at"> = {
   name: "",
@@ -54,6 +45,9 @@ const defaultNewTemplate: Omit<EmailTemplate, "id" | "created_at" | "updated_at"
   cta_url: "https://averroes.app",
 };
 
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : "Terjadi kesalahan";
+
 const AdminTemplates = () => {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,11 +60,7 @@ const AdminTemplates = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -79,18 +69,22 @@ const AdminTemplates = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setTemplates(data || []);
-    } catch (error: any) {
+      setTemplates(data?.length ? data : getFallbackEmailTemplates());
+    } catch (error: unknown) {
       console.error("Error fetching templates:", error);
+      setTemplates(getFallbackEmailTemplates());
       toast({
-        title: "Error",
-        description: "Gagal memuat template",
-        variant: "destructive",
+        title: "Template lokal dimuat",
+        description: "Koneksi admin Supabase belum aktif, jadi template default lokal dipakai.",
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const openNewDialog = () => {
     setEditingTemplate(null);
@@ -136,24 +130,55 @@ const AdminTemplates = () => {
 
     setIsSaving(true);
     try {
+      const templatePayload = {
+        name: formData.name,
+        subject: formData.subject,
+        greeting: formData.greeting,
+        main_message: formData.main_message,
+        update_title: formData.update_title,
+        updates: formData.updates,
+        closing_message: formData.closing_message,
+        cta_text: formData.cta_text,
+        cta_url: formData.cta_url,
+      };
+
+      const saveLocalFallback = () => {
+        const savedTemplate = saveLocalEmailTemplate({
+          ...templatePayload,
+          id: editingTemplate?.id,
+          created_at: editingTemplate?.created_at,
+          created_by: editingTemplate?.created_by ?? null,
+        });
+
+        setTemplates([
+          savedTemplate,
+          ...templates.filter((template) => template.id !== savedTemplate.id),
+        ]);
+
+        toast({
+          title: "Template tersimpan lokal",
+          description: "Template bisa langsung dipakai untuk tes email di browser ini.",
+        });
+      };
+
       if (editingTemplate) {
+        if (editingTemplate.is_local || editingTemplate.id.startsWith("default-")) {
+          saveLocalFallback();
+          setShowDialog(false);
+          return;
+        }
+
         // Update existing template
         const { error } = await supabase
           .from("email_templates")
-          .update({
-            name: formData.name,
-            subject: formData.subject,
-            greeting: formData.greeting,
-            main_message: formData.main_message,
-            update_title: formData.update_title,
-            updates: formData.updates,
-            closing_message: formData.closing_message,
-            cta_text: formData.cta_text,
-            cta_url: formData.cta_url,
-          })
+          .update(templatePayload)
           .eq("id", editingTemplate.id);
 
-        if (error) throw error;
+        if (error) {
+          saveLocalFallback();
+          setShowDialog(false);
+          return;
+        }
 
         toast({
           title: "Berhasil",
@@ -161,19 +186,13 @@ const AdminTemplates = () => {
         });
       } else {
         // Create new template
-        const { error } = await supabase.from("email_templates").insert({
-          name: formData.name,
-          subject: formData.subject,
-          greeting: formData.greeting,
-          main_message: formData.main_message,
-          update_title: formData.update_title,
-          updates: formData.updates,
-          closing_message: formData.closing_message,
-          cta_text: formData.cta_text,
-          cta_url: formData.cta_url,
-        });
+        const { error } = await supabase.from("email_templates").insert(templatePayload);
 
-        if (error) throw error;
+        if (error) {
+          saveLocalFallback();
+          setShowDialog(false);
+          return;
+        }
 
         toast({
           title: "Berhasil",
@@ -183,11 +202,11 @@ const AdminTemplates = () => {
 
       setShowDialog(false);
       fetchTemplates();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving template:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -200,12 +219,32 @@ const AdminTemplates = () => {
 
     setIsDeleting(true);
     try {
+      if (deleteTemplate.is_local || deleteTemplate.id.startsWith("default-")) {
+        deleteLocalEmailTemplate(deleteTemplate.id);
+        setTemplates(templates.filter((template) => template.id !== deleteTemplate.id));
+        setDeleteTemplate(null);
+        toast({
+          title: "Template disembunyikan",
+          description: "Template lokal sudah dihapus dari browser ini.",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from("email_templates")
         .delete()
         .eq("id", deleteTemplate.id);
 
-      if (error) throw error;
+      if (error) {
+        deleteLocalEmailTemplate(deleteTemplate.id);
+        setTemplates(templates.filter((template) => template.id !== deleteTemplate.id));
+        setDeleteTemplate(null);
+        toast({
+          title: "Template lokal dihapus",
+          description: "DB belum bisa diakses, perubahan diterapkan di browser ini.",
+        });
+        return;
+      }
 
       toast({
         title: "Berhasil",
@@ -214,11 +253,11 @@ const AdminTemplates = () => {
 
       setDeleteTemplate(null);
       fetchTemplates();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting template:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -272,6 +311,11 @@ const AdminTemplates = () => {
                 <div className="flex items-start justify-between">
                   <CardTitle className="text-base font-semibold truncate pr-2">
                     {template.name}
+                    {template.is_local && (
+                      <span className="ml-2 rounded bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
+                        Lokal
+                      </span>
+                    )}
                   </CardTitle>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button

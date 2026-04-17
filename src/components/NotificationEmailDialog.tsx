@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, Send, Info, Users, User, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { findFallbackEmailTemplate, getFallbackEmailTemplates } from "@/lib/emailTemplates";
 
 interface Recipient {
   id: string;
@@ -80,14 +81,41 @@ const NotificationEmailDialog = ({
   }, [open]);
 
   const fetchSavedTemplates = async () => {
-    const { data } = await supabase
+    const fallbackTemplates = getFallbackEmailTemplates().map(({ id, name }) => ({ id, name }));
+    const { data, error } = await supabase
       .from("email_templates")
       .select("id, name")
       .order("name");
-    setSavedTemplates(data || []);
+
+    if (error || !data?.length) {
+      setSavedTemplates(fallbackTemplates);
+      return;
+    }
+
+    const ids = new Set(data.map((template) => template.id));
+    setSavedTemplates([
+      ...data,
+      ...fallbackTemplates.filter((template) => !ids.has(template.id)),
+    ]);
   };
 
   const loadTemplate = async (templateId: string) => {
+    const fallbackTemplate = findFallbackEmailTemplate(templateId);
+    if (fallbackTemplate) {
+      setTemplate({
+        subject: fallbackTemplate.subject,
+        greeting: fallbackTemplate.greeting,
+        mainMessage: fallbackTemplate.main_message,
+        updateTitle: fallbackTemplate.update_title,
+        updates: fallbackTemplate.updates,
+        closingMessage: fallbackTemplate.closing_message,
+        ctaText: fallbackTemplate.cta_text,
+        ctaUrl: fallbackTemplate.cta_url,
+      });
+      setUpdatesText(fallbackTemplate.updates.join("\n"));
+      return;
+    }
+
     const { data } = await supabase
       .from("email_templates")
       .select("*")

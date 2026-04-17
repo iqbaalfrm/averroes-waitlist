@@ -36,6 +36,16 @@ interface WaitlistEntry {
 
 const ITEMS_PER_PAGE = 10;
 
+const TEST_WAITLIST_ENTRY: WaitlistEntry = {
+  id: "11111111-2222-4333-8444-555555555555",
+  email: "fileamansentosa@gmail.com",
+  name: "File Aman Sentosa",
+  interests: ["Saham Syariah", "Crypto Syariah", "Zakat"],
+  created_at: new Date().toISOString(),
+  last_reminder_at: null,
+  reminder_count: 0,
+};
+
 const AdminWaitlist = () => {
   const [waitlistData, setWaitlistData] = useState<WaitlistEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,12 +88,13 @@ const AdminWaitlist = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setWaitlistData(data || []);
+      setWaitlistData(data?.length ? data : [TEST_WAITLIST_ENTRY]);
     } catch (error) {
       console.error("Error fetching waitlist:", error);
+      setWaitlistData([TEST_WAITLIST_ENTRY]);
       toast({
         title: "Error",
-        description: "Gagal memuat data waitlist",
+        description: "Gagal memuat data waitlist, data tes lokal ditampilkan.",
         variant: "destructive",
       });
     } finally {

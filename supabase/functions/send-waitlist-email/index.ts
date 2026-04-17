@@ -7,6 +7,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const logoHeaderHtml = `
+  <div style="margin-bottom: 32px;">
+    <div style="display: inline-flex; align-items: center; gap: 12px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 12px 16px; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);">
+      <img src="https://www.averroes.web.id/logo.png" width="48" height="48" alt="Averroes" style="display: block; width: 48px; height: 48px; border-radius: 12px; object-fit: contain;">
+      <span style="color: #0f172a; font-size: 24px; font-weight: 800; letter-spacing: 0;">Averroes</span>
+    </div>
+    <p style="margin: 12px 0 0; color: #64748b; font-size: 14px;">Crypto Syariah & Keuangan Islami</p>
+  </div>
+`;
+
 interface WaitlistEmailRequest {
   email: string;
   name?: string;
@@ -44,12 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
           <!-- Header -->
           <div style="text-align: center; margin-bottom: 32px;">
-            <!-- Logo -->
-            <div style="display: inline-block; width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #34d399 100%); border-radius: 16px; line-height: 60px; font-size: 28px; font-weight: bold; color: white; text-align: center;">
-              A
-            </div>
-            <h1 style="margin: 16px 0 0; color: #1a1a1a; font-size: 24px;">Averroes</h1>
-            <p style="margin: 4px 0 0; color: #6b7280; font-size: 14px;">Crypto Syariah & Keuangan Islami</p>
+            ${logoHeaderHtml}
           </div>
           
           <!-- Main Card -->
