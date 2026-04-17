@@ -8,7 +8,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AdminWrapper = () => {
-  const { user, isAdmin, isLoading, handleLogout } = useAdminAuth();
+  const { user, userEmail, isAdmin, isLoading, handleLogout } = useAdminAuth();
 
   if (isLoading || isAdmin === null) {
     return (
@@ -41,7 +41,7 @@ const AdminWrapper = () => {
             </div>
             <CardTitle className="text-2xl">Akses Ditolak</CardTitle>
             <p className="text-muted-foreground">
-              Akun ({user?.email}) tidak memiliki akses admin.
+              Akun ({userEmail ?? user?.email}) tidak memiliki akses admin.
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -62,7 +62,7 @@ const AdminWrapper = () => {
   }
 
   return (
-    <AdminLayout onLogout={handleLogout} userEmail={user?.email}>
+    <AdminLayout onLogout={handleLogout} userEmail={userEmail}>
       <Outlet />
     </AdminLayout>
   );
