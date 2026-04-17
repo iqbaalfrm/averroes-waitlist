@@ -22,11 +22,7 @@ const AdminAuth = () => {
   // Check if already logged in
   useEffect(() => {
     const checkSession = async () => {
-      // INTERNAL BYPASS CHECK
-      if (localStorage.getItem("averroes_admin_bypass") === "true") {
-        navigate("/admin");
-        return;
-      }
+      localStorage.removeItem("averroes_admin_bypass");
 
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -36,7 +32,7 @@ const AdminAuth = () => {
     checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session || localStorage.getItem("averroes_admin_bypass") === "true") {
+      if (session) {
         navigate("/admin");
       }
     });
@@ -76,18 +72,6 @@ const AdminAuth = () => {
     if (!validateInputs()) return;
 
     setIsLoading(true);
-
-    // KODE BYPASS KHUSUS UNTUK ANDA (Karena limitasi Supabase Email Confirmation Server)
-    if (email.trim() === "admin@averroes.web.id" && password === "Averroes12345!") {
-      localStorage.setItem("averroes_admin_bypass", "true");
-      toast({
-        title: "Login Eksekutif Berhasil",
-        description: "Selamat datang kembali, Raja Admin!",
-      });
-      setIsLoading(false);
-      navigate("/admin");
-      return;
-    }
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
